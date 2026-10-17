@@ -4,6 +4,8 @@ A Claude Code mod that checks the prompt you are typing. Pause for a moment and 
 
 ## Install
 
+Requires Claude Code 2.1.301 or later. The desktop app runs its own bundled build of Claude Code, so the mod runs there only once that build is 2.1.301 or later.
+
 ```
 claude plugin install prompt-dialect --marketplace marcelomiyake/prompt-dialect
 ```

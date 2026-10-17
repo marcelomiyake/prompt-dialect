@@ -18,7 +18,7 @@ Spelling and grammar checking as you type, and prompt rewrites that follow Anthr
 
 ## Install in Claude Code
 
-Tested with Claude Code 2.1.301. The mods API is in early access and can change between releases.
+Requires Claude Code 2.1.301 or later; `claude --version` shows yours. The mods API is in early access and can change between releases. An older build refuses the whole mod when it loads, because it lacks an event the mod hooks (2.1.299 has no `prompt.change`), and it says so only in the debug log.
 
 At the prompt of a Claude Code terminal session:
 
@@ -33,6 +33,8 @@ claude plugin install prompt-dialect --marketplace marcelomiyake/prompt-dialect
 ```
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `marcelomiyake/prompt-dialect`, then **Add plugin**.
+
+The desktop app runs its own bundled build of Claude Code, not the `claude` on your `PATH`, and updates it on its own schedule. Until that bundled build is 2.1.301 or later, the mod installs but does not run in the desktop app: no band and no `/dialect`, while a terminal session with a newer `claude` runs it. The folder the app keeps the build in is named after its version, for example `~/.config/Claude/claude-code/2.1.299/` on Linux.
 
 ## Usage and keyboard shortcuts
 
