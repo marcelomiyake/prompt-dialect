@@ -6,6 +6,7 @@
   "homepage": "https://github.com/marcelomiyake/prompt-dialect",
   "repository": "https://github.com/marcelomiyake/prompt-dialect",
   "license": "MIT",
+  "icon": "./icon.png",
   "keywords": [
     "claude-code",
     "claude-code-plugin",

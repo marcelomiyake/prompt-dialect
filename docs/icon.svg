@@ -1,0 +1,14 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="512" height="512" viewBox="0 0 512 512">
+  <title>prompt-dialect</title>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="0" y2="1">
+      <stop offset="0" stop-color="#2B3366"/>
+      <stop offset="1" stop-color="#1A1F42"/>
+    </linearGradient>
+  </defs>
+  <rect width="512" height="512" rx="112" fill="url(#bg)"/>
+  <polyline points="102,238 166,294 102,350" fill="none" stroke="#F4EFE6" stroke-width="36" stroke-linecap="round" stroke-linejoin="round"/>
+  <rect x="216" y="270" width="166" height="36" rx="18" fill="#F4EFE6"/>
+  <path d="M216 354 q14 -17 27.7 0 t27.7 0 t27.7 0 t27.7 0 t27.7 0 t27.7 0" fill="none" stroke="#FF6B6B" stroke-width="16" stroke-linecap="round" stroke-linejoin="round"/>
+  <path d="M378 132 Q384 178 430 184 Q384 190 378 236 Q372 190 326 184 Q372 178 378 132 Z" fill="#FFC857"/>
+</svg>
