@@ -1,0 +1,11 @@
+{
+  "name": "prompt-dialect",
+  "owner": { "name": "Marcelo Masahiko Miyake" },
+  "plugins": [
+    {
+      "name": "prompt-dialect",
+      "source": "./plugins/claude-code",
+      "description": "Grammar fixes and model-aware prompt rewrites in the Claude Code prompt box."
+    }
+  ]
+}

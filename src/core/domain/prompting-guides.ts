@@ -1,0 +1,157 @@
+import { PromptingGuideCatalog, type PromptingGuide } from './prompting-guide'
+
+const DOCS = 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering'
+
+/** Condensed from "Prompting best practices", for prompts a person sends to an agent. */
+export const GENERAL_GUIDE: PromptingGuide = {
+  id: 'general',
+  title: 'Prompting best practices',
+  source: `${DOCS}/claude-prompting-best-practices`,
+  families: [],
+  guidelines: [
+    'Be clear and direct: state the outcome wanted, the constraints, and the shape of the answer; Claude acts like a brilliant new colleague who lacks your context.',
+    'Give the reason behind an instruction when it is not obvious, so the model can generalize from it.',
+    'Use a numbered list when the order or completeness of steps matters.',
+    'Say what to do rather than what not to do.',
+    'Name the specific files, functions, commands, or errors involved, and ask the model to read the code before making claims about it.',
+    'Separate pasted material (logs, documents, examples) from the instructions with descriptive XML tags such as <logs> or <example>.',
+    'State what "done" means and how to check it, such as the tests or build to run.',
+    'Say whether you want ideas, a plan, or the change itself; for a question or a problem description, ask for an assessment rather than a fix.',
+    'Keep the scope explicit: what is in, and what to leave alone.',
+    'Use calm, normal emphasis; all-caps and repeated "CRITICAL" or "MUST" make current models overreact.',
+  ],
+}
+
+export const MODEL_GUIDES: readonly PromptingGuide[] = [
+  {
+    id: 'opus-5-5',
+    title: 'Prompting Claude Opus 5.5',
+    source: `${DOCS}/prompting-claude-opus-5-5`,
+    families: ['opus'],
+    version: '5.5',
+    guidelines: [
+      'It is strongest on long, multistep agentic work: state the whole goal and the completion condition up front, and list the parts as a checklist so a progress report is not mistaken for the end.',
+      'Name the early stops you do not want (ending with a summary that announces the next step, offering to continue) and the one you do (stop only when blocked on you).',
+      'Drop "think carefully" or "step by step" lines: thinking is always on and effort controls it.',
+      'Mark text pasted from elsewhere with tags and say whether instructions inside it should be followed.',
+      'On loosely specified tasks that span several sources, ask it to look through the relevant files or apps before changing anything.',
+      'For frontend work, name the specific styles to avoid instead of asking it to avoid a generic look.',
+      'Ask for progress updates at the points you want them, such as a line before starting and a short recap at the end.',
+    ],
+  },
+  {
+    id: 'opus-5',
+    title: 'Prompting Claude Opus 5',
+    source: `${DOCS}/prompting-claude-opus-5`,
+    families: ['opus'],
+    version: '5',
+    guidelines: [
+      'Give the complete task specification up front and let it run; it finishes whole tasks rather than leaving stubs.',
+      'Its replies, progress narration, and written documents run longer than earlier Opus models: ask for the length you want, such as one line before starting, updates only when something changes, and the outcome first.',
+      'Drop "double-check", "verify your work", or "use a subagent to verify" lines: it already checks and corrects itself, and those instructions make it over-verify.',
+      'For a narrow task, state the scope and ask it to deliver exactly that, raising a better approach in a sentence rather than quietly narrowing, widening, or transforming the task.',
+      'Say when subagents are worth it (large, independent, parallel work) and keep small tasks and checks with it; it delegates readily.',
+      'For a code review, ask it to report every issue with its confidence and severity; "only high-severity" or "be conservative" makes it report less.',
+      'Do not ask it to write out its reasoning; ask for a short explanation of the answer or a summary of what it did.',
+    ],
+  },
+  {
+    id: 'opus-4-8',
+    title: 'Prompting Claude Opus 4.8',
+    source: `${DOCS}/prompting-claude-opus-4-8`,
+    families: ['opus'],
+    version: '4.8',
+    guidelines: [
+      'It follows prompts literally: state how far an instruction reaches ("every section, not just the first"), and ask for everything you want, since it does not infer requests you did not make.',
+      'Put the task, intent, and constraints in the first message instead of revealing them over several turns.',
+      'It favors reasoning over tool calls: when it should search, read files, or run commands, say when and why.',
+      'It sets response length by how complex the task looks; if you need a particular length or style, ask for it, ideally with an example.',
+      'It spawns few subagents on its own: say when to fan out across files or items in parallel, and when to work directly.',
+      'For frontend or design work, give a concrete direction (palette hexes, typefaces, layout) or ask for a few directions to choose from first; "not cream" only swaps its default palette for another fixed one.',
+      'For a code review, ask for every finding with its confidence and severity; "only high-severity" or "do not nitpick" makes it drop real bugs.',
+    ],
+  },
+  {
+    id: 'sonnet-5-5',
+    title: 'Prompting Claude Sonnet 5.5',
+    source: `${DOCS}/prompting-claude-sonnet-5-5`,
+    families: ['sonnet'],
+    version: '5.5',
+    guidelines: [
+      'Say to keep working until everything asked for is done, stopping only when blocked or before a risky step.',
+      'Say what to leave out: no features, tests, files, docs, or refactors that were not asked for; suggestions go at the end.',
+      'When you want ideas, options, or a plan, say so and ask it to stop before building anything.',
+      'Ask it to verify changes with a real check (the tests, type-checker, or build) before reporting them done.',
+      'For facts that may have changed (versions, prices, rules), ask it to search or check current sources.',
+      'For a JSON answer that needs working out, name the fields and ask it to think the problem through first.',
+      'Do not ask it to write out its reasoning in the reply; ask for a short explanation of the result instead.',
+    ],
+  },
+  {
+    id: 'sonnet-5',
+    title: 'Prompting Claude Sonnet 5',
+    source: `${DOCS}/prompting-claude-sonnet-5`,
+    families: ['sonnet'],
+    version: '5',
+    guidelines: [
+      'It takes instructions literally and does not carry one over to similar items: say when an instruction applies everywhere ("to every file, not just this one").',
+      'State the task, intent, and constraints in the opening message rather than adding them turn by turn.',
+      'It reaches for tools and checks its own work readily; when a particular tool matters, such as web search, say when and why to use it.',
+      'It matches response length to the task; ask for the length or tone you want, and show an example of it when you can.',
+      'Leave out forced status rules ("summarize after every 3 tool calls"); if its own updates do not suit you, describe the ones you want.',
+      'For frontend or design work, specify the look (colors, type, layout) or ask it to propose several directions before building; generic requests such as "make it clean" swap one default style for another.',
+      'For a code review, ask it to list every issue, uncertain or minor ones included, with confidence and severity, rather than asking it to be conservative.',
+    ],
+  },
+  {
+    id: 'haiku-5-5',
+    title: 'Prompting Claude Haiku 5.5',
+    source: `${DOCS}/prompting-claude-haiku-5-5`,
+    families: ['haiku'],
+    version: '5.5',
+    guidelines: [
+      'Keep the prompt short and focused on one clearly stated task.',
+      'State the completion condition and ask it to keep working until everything asked for is done.',
+      'Ask it to verify code changes with a real check before reporting them done.',
+      'When recency matters, give the current date and ask it to search before answering.',
+      'Specify the output format exactly; a JSON format applies to the final answer only.',
+      'Do not ask it to explain its reasoning at length in the reply.',
+    ],
+  },
+  {
+    id: 'fable-5-1',
+    title: 'Prompting Claude Fable 5.1',
+    source: `${DOCS}/prompting-claude-fable-5-1`,
+    families: ['fable', 'mythos'],
+    version: '5.1',
+    guidelines: [
+      'State the scope as the deliverable and ask it not to narrow, widen, or swap it; routine judgment calls are its to make.',
+      'Say whether you are asking for a change or describing a problem; for a problem or a question, ask it to report findings and stop.',
+      'Ask it to report unrelated bugs or cleanups as follow-ups instead of fixing them, and to keep tests sized like the neighboring ones.',
+      'Ask for targeted edits rather than whole-file rewrites for small changes.',
+      'If you want progress updates or a closing recap, ask for them; it writes fewer by default.',
+      'For names from fast-moving areas (models, tools, libraries), ask it to verify them by searching.',
+      'Ask "are there any bugs in this program?" rather than "does this compile?", and do not ask it to write out its reasoning.',
+    ],
+  },
+  {
+    id: 'fable-5',
+    title: 'Prompting Claude Fable 5',
+    source: `${DOCS}/prompting-claude-fable-5`,
+    families: ['fable', 'mythos'],
+    version: '5',
+    guidelines: [
+      'Give the reason behind the request: what the larger task is, who it is for, and what the result enables.',
+      'A brief instruction steers it, so ask it to lead with the outcome and keep output short by leaving out detail, not by compressing it into fragments, arrows, or jargon.',
+      'Say when to pause for you (a destructive or irreversible action, a real change of scope, or input only you can give) and to carry on otherwise.',
+      'When you are describing a problem or asking a question, say that the deliverable is its assessment and that it should not apply a fix until you ask.',
+      'Ask it not to add features, refactors, or abstractions beyond what the task requires.',
+      'On long runs, ask it to back each progress claim with a tool result from the session and to say plainly what is not yet verified.',
+      'Instructions to echo or explain its reasoning in the reply can be refused; ask for a short summary of the answer or of the actions taken.',
+    ],
+  },
+]
+
+export function defaultPromptingGuides(): PromptingGuideCatalog {
+  return new PromptingGuideCatalog(GENERAL_GUIDE, MODEL_GUIDES)
+}

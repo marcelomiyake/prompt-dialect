@@ -1,0 +1,51 @@
+{
+  "name": "prompt-dialect",
+  "version": "0.1.0",
+  "description": "Underlines mistakes in your prompt as you type, fixes them with a click, and rewrites the prompt for the Claude model you are using.",
+  "author": { "name": "Marcelo Masahiko Miyake" },
+  "homepage": "https://github.com/marcelomiyake/prompt-dialect",
+  "repository": "https://github.com/marcelomiyake/prompt-dialect",
+  "license": "MIT",
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "claude-code-mod",
+    "grammar",
+    "grammar-checker",
+    "spelling",
+    "spell-check",
+    "prompt",
+    "prompt-engineering",
+    "prompt-improver",
+    "prompt-optimizer",
+    "anthropic",
+    "claude"
+  ],
+  "types": "./types/index.d.ts",
+  "userConfig": {
+    "checkAsYouType": {
+      "type": "boolean",
+      "title": "Check as you type",
+      "description": "Check the prompt for mistakes whenever you pause typing. /dialect on|off overrides it.",
+      "default": true
+    },
+    "grammarModel": {
+      "type": "string",
+      "title": "Grammar model",
+      "description": "The model that checks the prompt: a fast, cheap one. An alias such as haiku or a full model id.",
+      "default": "claude-haiku-5-5"
+    },
+    "improvementModel": {
+      "type": "string",
+      "title": "Rewrite model",
+      "description": "The model that rewrites the prompt for the session's model when you press Improve.",
+      "default": "claude-haiku-5-5"
+    },
+    "debounceMs": {
+      "type": "number",
+      "title": "Pause before checking (ms)",
+      "description": "How long you pause typing before the prompt is checked, from 250 to 10000.",
+      "default": 900
+    }
+  }
+}

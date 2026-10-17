@@ -1,0 +1,53 @@
+{
+  "name": "prompt-dialect",
+  "version": "0.1.0",
+  "private": true,
+  "description": "Grammar fixes and model-aware prompt improvements for AI coding tools, with a Claude Code mod as the first adapter.",
+  "keywords": [
+    "claude-code",
+    "claude-code-plugin",
+    "claude-code-mod",
+    "grammar",
+    "grammar-checker",
+    "spelling",
+    "spell-check",
+    "prompt",
+    "prompt-engineering",
+    "prompt-improver",
+    "prompt-optimizer",
+    "anthropic",
+    "claude"
+  ],
+  "homepage": "https://github.com/marcelomiyake/prompt-dialect#readme",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/marcelomiyake/prompt-dialect.git"
+  },
+  "license": "MIT",
+  "author": "Marcelo Masahiko Miyake",
+  "type": "module",
+  "engines": {
+    "node": ">=22"
+  },
+  "scripts": {
+    "build": "node scripts/build-claude-code-plugin.mjs",
+    "typecheck": "tsc -p tsconfig.json && tsc -p tsconfig.test.json",
+    "test": "vitest run",
+    "test:coverage": "vitest run --coverage",
+    "test:plugin": "claude plugin test plugins/claude-code",
+    "validate:plugin": "claude plugin validate plugins/claude-code",
+    "types:sync": "node scripts/sync-claude-code-types.mjs",
+    "verify": "npm run format:check && npm run typecheck && npm run test:coverage && npm run build && npm run validate:plugin && npm run test:plugin",
+    "sonar": "vitest run --coverage && sonar-scanner",
+    "format": "prettier --write .",
+    "format:check": "prettier --check ."
+  },
+  "devDependencies": {
+    "@types/node": "^24.19.2",
+    "@vitest/coverage-v8": "^5.0.5",
+    "esbuild": "^0.28.2",
+    "prettier": "^3.9.10",
+    "typescript": "^6.0.3",
+    "vitest": "^5.0.5"
+  }
+}

@@ -1,0 +1,4 @@
+{
+  "description": "The prompt-dialect hooks module, bundled from src/ by npm run build",
+  "modules": ["./register.js"]
+}
