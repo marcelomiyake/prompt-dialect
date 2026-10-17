@@ -1,12 +1,10 @@
 import { PromptingGuideCatalog, type PromptingGuide } from './prompting-guide'
 
-const DOCS = 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering'
-
 /** Condensed from "Prompting best practices", for prompts a person sends to an agent. */
 export const GENERAL_GUIDE: PromptingGuide = {
   id: 'general',
   title: 'Prompting best practices',
-  source: `${DOCS}/claude-prompting-best-practices`,
+  source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/claude-prompting-best-practices',
   families: [],
   guidelines: [
     'Be clear and direct: state the outcome wanted, the constraints, and the shape of the answer; Claude acts like a brilliant new colleague who lacks your context.',
@@ -26,7 +24,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'opus-5-5',
     title: 'Prompting Claude Opus 5.5',
-    source: `${DOCS}/prompting-claude-opus-5-5`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5-5',
     families: ['opus'],
     version: '5.5',
     guidelines: [
@@ -42,7 +40,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'opus-5',
     title: 'Prompting Claude Opus 5',
-    source: `${DOCS}/prompting-claude-opus-5`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-5',
     families: ['opus'],
     version: '5',
     guidelines: [
@@ -58,7 +56,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'opus-4-8',
     title: 'Prompting Claude Opus 4.8',
-    source: `${DOCS}/prompting-claude-opus-4-8`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-opus-4-8',
     families: ['opus'],
     version: '4.8',
     guidelines: [
@@ -74,7 +72,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'sonnet-5-5',
     title: 'Prompting Claude Sonnet 5.5',
-    source: `${DOCS}/prompting-claude-sonnet-5-5`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5-5',
     families: ['sonnet'],
     version: '5.5',
     guidelines: [
@@ -90,7 +88,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'sonnet-5',
     title: 'Prompting Claude Sonnet 5',
-    source: `${DOCS}/prompting-claude-sonnet-5`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-sonnet-5',
     families: ['sonnet'],
     version: '5',
     guidelines: [
@@ -106,7 +104,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'haiku-5-5',
     title: 'Prompting Claude Haiku 5.5',
-    source: `${DOCS}/prompting-claude-haiku-5-5`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-haiku-5-5',
     families: ['haiku'],
     version: '5.5',
     guidelines: [
@@ -121,7 +119,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'fable-5-1',
     title: 'Prompting Claude Fable 5.1',
-    source: `${DOCS}/prompting-claude-fable-5-1`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5-1',
     families: ['fable', 'mythos'],
     version: '5.1',
     guidelines: [
@@ -137,7 +135,7 @@ export const MODEL_GUIDES: readonly PromptingGuide[] = [
   {
     id: 'fable-5',
     title: 'Prompting Claude Fable 5',
-    source: `${DOCS}/prompting-claude-fable-5`,
+    source: 'https://platform.claude.com/docs/en/build-with-claude/prompt-engineering/prompting-claude-fable-5',
     families: ['fable', 'mythos'],
     version: '5',
     guidelines: [
