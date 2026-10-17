@@ -1122,7 +1122,7 @@ function clampedOr(value, fallback) {
 
 // src/adapters/claude-code/register.tsx
 var TOOL = "Claude Code";
-var ENABLED_STORE_KEY = "isEnabled";
+var ENABLED_STORE_ENTRY = "isEnabled";
 var MODEL_TIMEOUT_MS = 3e4;
 var MAX_REPAINT_LENGTH = 800;
 var MAX_REPAINT_LINES = 3;
@@ -1149,7 +1149,7 @@ function register(on, options) {
       description: "Turn prompt-dialect grammar checking on or off, or show its status",
       argumentHint: "[on|off]"
     });
-    const stored = await $.store.get(ENABLED_STORE_KEY);
+    const stored = await $.store.get(ENABLED_STORE_ENTRY);
     const isEnabled = typeof stored === "boolean" ? stored : settings.checkAsYouType;
     await update($, session, (state) => ({ ...state, isEnabled }));
     return next(e);
@@ -1159,7 +1159,7 @@ function register(on, options) {
     if (argument === "on" || argument === "off") {
       const isEnabled2 = argument === "on";
       await update($, session, (state) => ({ ...state, isEnabled: isEnabled2 }));
-      await $.store.set(ENABLED_STORE_KEY, isEnabled2);
+      await $.store.set(ENABLED_STORE_ENTRY, isEnabled2);
       stopChecking();
       return { text: isEnabled2 ? "Checking prompts as you type." : "Prompt checking is off." };
     }

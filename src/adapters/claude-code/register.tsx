@@ -19,7 +19,7 @@ import { reviewFromState, reviewToState } from './review-state'
 import { settingsFrom, type Settings } from './settings'
 
 const TOOL = 'Claude Code'
-const ENABLED_STORE_KEY = 'isEnabled'
+const ENABLED_STORE_ENTRY = 'isEnabled'
 const MODEL_TIMEOUT_MS = 30_000
 /** Past these, filling the box again could fold the draft into a paste placeholder. */
 const MAX_REPAINT_LENGTH = 800
@@ -56,7 +56,7 @@ export function register(on: On, options: PluginOptions): void {
       description: 'Turn prompt-dialect grammar checking on or off, or show its status',
       argumentHint: '[on|off]',
     })
-    const stored = await $.store.get(ENABLED_STORE_KEY)
+    const stored = await $.store.get(ENABLED_STORE_ENTRY)
     const isEnabled = typeof stored === 'boolean' ? stored : settings.checkAsYouType
     await update($, session, state => ({ ...state, isEnabled }))
     return next(e)
@@ -67,7 +67,7 @@ export function register(on: On, options: PluginOptions): void {
     if (argument === 'on' || argument === 'off') {
       const isEnabled = argument === 'on'
       await update($, session, state => ({ ...state, isEnabled }))
-      await $.store.set(ENABLED_STORE_KEY, isEnabled)
+      await $.store.set(ENABLED_STORE_ENTRY, isEnabled)
       stopChecking()
       return { text: isEnabled ? 'Checking prompts as you type.' : 'Prompt checking is off.' }
     }
