@@ -147,3 +147,12 @@ vite.config.ts.timestamp-*
 
 # Turbo Repo
 .turbo
+
+# prompt-dialect
+# Claude Code mod API declarations: generated per Claude Code build (npm run types:sync)
+types/claude-code/
+plugins/claude-code/.claude-plugin/types/
+# SonarScanner work files
+.scannerwork/
+# Claude Code per-user settings
+.claude/settings.local.json
