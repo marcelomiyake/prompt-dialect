@@ -16,14 +16,11 @@ export class TextChange {
   static between(before: string, after: string): TextChange {
     const limit = Math.min(before.length, after.length)
     let prefix = 0
-    while (prefix < limit && before.charCodeAt(prefix) === after.charCodeAt(prefix)) {
+    while (prefix < limit && before[prefix] === after[prefix]) {
       prefix += 1
     }
     let suffix = 0
-    while (
-      suffix < limit - prefix &&
-      before.charCodeAt(before.length - 1 - suffix) === after.charCodeAt(after.length - 1 - suffix)
-    ) {
+    while (suffix < limit - prefix && before.at(-1 - suffix) === after.at(-1 - suffix)) {
       suffix += 1
     }
     const replaced = TextSpan.of(prefix, before.length - suffix)

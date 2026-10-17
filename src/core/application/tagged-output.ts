@@ -5,8 +5,10 @@
  */
 export function tagAbsentFrom(text: string, name: string): string {
   let tag = name
-  for (let n = 2; text.includes(`<${tag}>`) || text.includes(`</${tag}>`); n += 1) {
+  let n = 2
+  while (text.includes(`<${tag}>`) || text.includes(`</${tag}>`)) {
     tag = `${name}_${n}`
+    n += 1
   }
   return tag
 }

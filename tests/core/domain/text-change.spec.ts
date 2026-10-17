@@ -23,7 +23,7 @@ describe('TextChange', () => {
   it('does not count a shared character twice when text repeats', () => {
     const change = TextChange.between('aaa', 'aaaa')
 
-    expect(change.replaced.length).toBe(0)
+    expect(change.replaced).toHaveLength(0)
     expect(change.insertedLength).toBe(1)
   })
 

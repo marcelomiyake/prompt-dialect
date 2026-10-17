@@ -163,7 +163,7 @@ function improvementViewOf(input: BandInput): ImprovementView {
 }
 
 function oneLine(text: string): string {
-  return text.split(/\r?\n/).join(' ⏎ ')
+  return text.replaceAll(/\r?\n/g, ' ⏎ ')
 }
 
 function head(text: string, width: number): string {

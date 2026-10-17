@@ -55,11 +55,11 @@ var TextChange = class _TextChange {
   static between(before, after) {
     const limit = Math.min(before.length, after.length);
     let prefix = 0;
-    while (prefix < limit && before.charCodeAt(prefix) === after.charCodeAt(prefix)) {
+    while (prefix < limit && before[prefix] === after[prefix]) {
       prefix += 1;
     }
     let suffix = 0;
-    while (suffix < limit - prefix && before.charCodeAt(before.length - 1 - suffix) === after.charCodeAt(after.length - 1 - suffix)) {
+    while (suffix < limit - prefix && before.at(-1 - suffix) === after.at(-1 - suffix)) {
       suffix += 1;
     }
     const replaced = TextSpan.of(prefix, before.length - suffix);
@@ -395,8 +395,10 @@ function judgeDraft(text, options = DEFAULT_DRAFT_POLICY) {
 // src/core/application/tagged-output.ts
 function tagAbsentFrom(text, name) {
   let tag = name;
-  for (let n = 2; text.includes(`<${tag}>`) || text.includes(`</${tag}>`); n += 1) {
+  let n = 2;
+  while (text.includes(`<${tag}>`) || text.includes(`</${tag}>`)) {
     tag = `${name}_${n}`;
+    n += 1;
   }
   return tag;
 }
@@ -1050,7 +1052,7 @@ function improvementViewOf(input) {
   }
 }
 function oneLine(text) {
-  return text.split(/\r?\n/).join(" ⏎ ");
+  return text.replaceAll(/\r?\n/g, " ⏎ ");
 }
 function head(text, width) {
   if (text.length <= width) {

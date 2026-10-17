@@ -5,7 +5,7 @@ describe('TextSpan', () => {
   it('measures a half-open range', () => {
     const span = TextSpan.of(2, 5)
 
-    expect(span.length).toBe(3)
+    expect(span).toHaveLength(3)
     expect(span.isEmpty).toBe(false)
     expect(TextSpan.of(4, 4).isEmpty).toBe(true)
   })
