@@ -1,5 +1,6 @@
 {
   "name": "prompt-dialect",
+  "description": "The prompt-dialect mod: grammar fixes and model-aware prompt rewrites for Claude Code.",
   "owner": { "name": "Marcelo Masahiko Miyake" },
   "plugins": [
     {
