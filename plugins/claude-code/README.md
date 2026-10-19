@@ -27,6 +27,7 @@ Set them in `/config`: `checkAsYouType` (default `true`), `grammarModel` and `im
 - **Sends** the prompt box text, with the mod's instructions, to the configured Claude model through Claude Code's own API client: one call each time you pause typing, and one each time you press Improve. The calls count toward your usage like any other request. The mod makes no other network requests and reads no environment variables or credentials.
 - **Stores** only your `/dialect on|off` choice, in Claude Code's plugin store. The current draft's suggestions are kept in the session's plugin state so they survive a reload, and drafts already checked are cached in memory.
 - **Writes** to the prompt box only when you apply a fix or press **Use it**, and to the clipboard only when you press **Copy**.
+- **Privacy policy:** <https://github.com/marcelomiyake/prompt-dialect/blob/main/PRIVACY.md>.
 - **Hooks** `session.start` to register `/dialect`; `command.run` for `/dialect` only, so every other command passes by untouched; `prompt.edit` and `prompt.change` to follow the draft as it changes; and `ui.render` for the band above the prompt.
 
 ## Source

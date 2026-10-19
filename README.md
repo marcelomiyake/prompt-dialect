@@ -104,6 +104,10 @@ claude --plugin-dir plugins/claude-code   # try it
 vhs docs/demo.tape                        # re-record docs/demo.gif (calls the model)
 ```
 
+## Privacy
+
+prompt-dialect sends the text in your prompt box only to the Claude model you configured, through Claude Code's own API client, and collects nothing for itself. The [privacy policy](PRIVACY.md) covers what it reads, sends, and stores, and for how long.
+
 ## License
 
 [MIT](LICENSE)
