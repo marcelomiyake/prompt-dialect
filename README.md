@@ -104,6 +104,12 @@ claude --plugin-dir plugins/claude-code   # try it
 vhs docs/demo.tape                        # re-record docs/demo.gif (calls the model)
 ```
 
+## Support
+
+- **Questions and bugs:** [open an issue](https://github.com/marcelomiyake/prompt-dialect/issues). Include your Claude Code version and the plugin version.
+- **Security problems:** report them privately, as [SECURITY.md](SECURITY.md) describes. Do not open a public issue.
+- **Anything else:** email **CONTACT_EMAIL**.
+
 ## License
 
 [MIT](LICENSE)
