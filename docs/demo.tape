@@ -16,7 +16,7 @@ Set TypingSpeed 45ms
 
 # Start Claude Code with only this mod: no MCP servers, no user settings.
 Hide
-Type "clear && claude --plugin-dir plugins/claude-code --strict-mcp-config --setting-sources project,local --permission-mode default --model opus"
+Type "clear && claude --plugin-dir . --strict-mcp-config --setting-sources project,local --permission-mode default --model opus"
 Enter
 Wait+Screen@60s /for shortcuts/
 Sleep 1s

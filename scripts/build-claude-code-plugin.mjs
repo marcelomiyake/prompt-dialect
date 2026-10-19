@@ -1,5 +1,6 @@
 // Bundles the Claude Code adapter and the core it uses into the plugin's one
-// hooks module, and lays the plugin's $.state contract beside it.
+// hooks module, and lays the plugin's $.state contract beside it. The plugin
+// is the repository root, so both land there.
 //
 //   node scripts/build-claude-code-plugin.mjs [--mirror <dir>]...
 //
@@ -11,11 +12,10 @@ import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
-const plugin = join(root, 'plugins/claude-code')
 
 await build({
   entryPoints: [join(root, 'src/adapters/claude-code/register.tsx')],
-  outfile: join(plugin, 'hooks/register.js'),
+  outfile: join(root, 'hooks/register.js'),
   bundle: true,
   format: 'esm',
   platform: 'neutral',
@@ -30,19 +30,21 @@ await build({
   logLevel: 'warning',
 })
 
-const contract = join(plugin, 'types/index.d.ts')
+const contract = join(root, 'types/index.d.ts')
 mkdirSync(dirname(contract), { recursive: true })
 copyFileSync(join(root, 'src/adapters/claude-code/plugin-state.d.ts'), contract)
 
+// What a running session needs of the plugin; the rest of the repository is
+// source and tooling.
+const PLUGIN_FILES = ['.claude-plugin/plugin.json', 'hooks', 'types/index.d.ts', 'icon.png']
+
 const args = process.argv.slice(2)
 const mirrors = args.filter((arg, index) => args[index - 1] === '--mirror' && arg !== '--mirror')
-const engineTypes = join('.claude-plugin', 'types')
 for (const mirror of mirrors) {
   const target = resolve(mirror, 'prompt-dialect')
-  cpSync(plugin, target, {
-    recursive: true,
-    filter: source => !source.includes(engineTypes) && !source.endsWith('tsconfig.json'),
-  })
+  for (const file of PLUGIN_FILES) {
+    cpSync(join(root, file), join(target, file), { recursive: true })
+  }
   console.log(`Mirrored the plugin to ${target}`)
 }
-console.log(`Built ${join(plugin, 'hooks/register.js')}`)
+console.log(`Built ${join(root, 'hooks/register.js')}`)

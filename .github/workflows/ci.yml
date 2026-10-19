@@ -32,7 +32,7 @@ jobs:
       - name: Plugin bundle is up to date
         run: |
           npm run build
-          git diff --exit-code -- plugins/claude-code
+          git diff --exit-code -- hooks types
 
       - name: SonarQube Cloud analysis
         uses: SonarSource/sonarqube-scan-action@d209202bc7d53ff1cc128f7f907dac145c9d6ae9 # v8.3.0

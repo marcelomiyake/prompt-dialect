@@ -5,5 +5,5 @@
     "types": ["node"],
     "noUnusedLocals": false
   },
-  "include": ["src", "tests", "plugins/claude-code/tests", "types/claude-code", "vitest.config.ts"]
+  "include": ["src", "tests", "types/claude-code", "vitest.config.ts"]
 }

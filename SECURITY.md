@@ -22,6 +22,6 @@ Include what you found, the steps to reproduce it, the plugin and Claude Code ve
 
 ## Scope
 
-In scope: the code in this repository, including the bundled plugin in `plugins/claude-code/`. The plugin sends the text of your prompt to the model you configure, through Claude Code's own API client, and stores no prompts or keys of its own. A way to make it send prompt text anywhere else, run code, or read files is a vulnerability.
+In scope: the code in this repository, including the bundled plugin in `hooks/register.js`. The plugin sends the text of your prompt to the model you configure, through Claude Code's own API client, and stores no prompts or keys of its own. A way to make it send prompt text anywhere else, run code, or read files is a vulnerability.
 
 Out of scope: Claude Code itself and the Anthropic API. Report those to Anthropic through its [responsible disclosure program](https://www.anthropic.com/responsible-disclosure-policy).

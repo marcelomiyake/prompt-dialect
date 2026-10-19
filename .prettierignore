@@ -1,6 +1,5 @@
 coverage
 node_modules
 types
-plugins/claude-code/hooks/register.js
-plugins/claude-code/types
-plugins/claude-code/.claude-plugin/types
+hooks/register.js
+.claude-plugin/types

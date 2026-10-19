@@ -5,7 +5,7 @@
   "plugins": [
     {
       "name": "prompt-dialect",
-      "source": "./plugins/claude-code",
+      "source": "./",
       "description": "Grammar fixes and model-aware prompt rewrites in the Claude Code prompt box."
     }
   ]
