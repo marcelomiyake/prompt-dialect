@@ -990,8 +990,8 @@ function hintFor(isPointerAvailable, count) {
   if (count === 1) {
     return isPointerAvailable ? "Hover the word to preview its fix, click to apply (or ctrl+x tab, then 1)." : "ctrl+x tab, then 1 to apply the fix.";
   }
-  const keys = `1-${Math.min(count, MAX_HOTKEYS)}`;
-  return isPointerAvailable ? `Hover a word to preview its fix, click to apply (or ctrl+x tab, then ${keys}).` : `ctrl+x tab, then ${keys} to apply a fix; a to apply all.`;
+  const range2 = `1-${Math.min(count, MAX_HOTKEYS)}`;
+  return isPointerAvailable ? `Hover a word to preview its fix, click to apply (or ctrl+x tab, then ${range2}).` : `ctrl+x tab, then ${range2} to apply a fix; a to apply all.`;
 }
 function chipFor(draft, suggestion, index, columns) {
   return {

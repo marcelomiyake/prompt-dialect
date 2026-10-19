@@ -94,10 +94,10 @@ function hintFor(isPointerAvailable: boolean, count: number): string {
       ? 'Hover the word to preview its fix, click to apply (or ctrl+x tab, then 1).'
       : 'ctrl+x tab, then 1 to apply the fix.'
   }
-  const keys = `1-${Math.min(count, MAX_HOTKEYS)}`
+  const range = `1-${Math.min(count, MAX_HOTKEYS)}`
   return isPointerAvailable
-    ? `Hover a word to preview its fix, click to apply (or ctrl+x tab, then ${keys}).`
-    : `ctrl+x tab, then ${keys} to apply a fix; a to apply all.`
+    ? `Hover a word to preview its fix, click to apply (or ctrl+x tab, then ${range}).`
+    : `ctrl+x tab, then ${range} to apply a fix; a to apply all.`
 }
 
 function chipFor(draft: string, suggestion: Suggestion, index: number, columns: number): ChipView {
