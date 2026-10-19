@@ -16,7 +16,7 @@ Please do not open a public issue for a security problem.
 Report it privately in one of these ways:
 
 - [Open a private security advisory](https://github.com/marcelomiyake/prompt-dialect/security/advisories/new) on GitHub.
-- Email **CONTACT_EMAIL** with "prompt-dialect security" in the subject.
+- Email [marcelo.m.miyake@gmail.com](mailto:marcelo.m.miyake@gmail.com) with "prompt-dialect security" in the subject.
 
 Include what you found, the steps to reproduce it, the plugin and Claude Code versions, and the impact you expect. You will get a reply within 5 business days. Once the problem is confirmed, a fix is released as soon as possible and the advisory is published with credit to you, unless you ask to stay anonymous.
 

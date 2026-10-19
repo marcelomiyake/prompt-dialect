@@ -108,7 +108,7 @@ vhs docs/demo.tape                        # re-record docs/demo.gif (calls the m
 
 - **Questions and bugs:** [open an issue](https://github.com/marcelomiyake/prompt-dialect/issues). Include your Claude Code version and the plugin version.
 - **Security problems:** report them privately, as [SECURITY.md](SECURITY.md) describes. Do not open a public issue.
-- **Anything else:** email **CONTACT_EMAIL**.
+- **Anything else:** email [marcelo.m.miyake@gmail.com](mailto:marcelo.m.miyake@gmail.com).
 
 ## License
 
