@@ -1,6 +1,6 @@
 // The prompt-dialect mod's $.state contract: plain JSON the host keeps for the
 // session, so the band and the prompt decorations survive a hot reload.
-// Copied to plugins/claude-code/types/index.d.ts by the build.
+// Copied to types/index.d.ts by the build.
 
 export type SuggestionState = {
   start: number

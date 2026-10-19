@@ -1,10 +1,10 @@
 // Runs the built plugin inside Claude Code's own engine: `npm run test:plugin`.
-// The behaviour itself is covered by the vitest suites in tests/; these check
+// The behaviour itself is covered by the vitest *.spec suites; these check
 // that the bundle loads, registers its command, and draws trees the real
 // terminal and desktop element tables accept.
 import type { On } from 'claude-code'
 import { describe, expect, mock, test, type Engine } from 'claude-code/testing'
-import type { DialectState } from '../types'
+import type { DialectState } from '../../types'
 
 const SURFACES = ['terminal', 'desktop'] as const
 const DRAFT = 'Is it possible to change the window for prompts?'
