@@ -235,16 +235,16 @@ export function textOf(node: unknown): string {
   return label + textOf(element.props.children)
 }
 
-export function buttonOf(tree: unknown, key: string): Element {
-  const button = elementsOf(tree).find(element => element.type === 'Button' && element.props.key === key)
+export function buttonOf(tree: unknown, id: string): Element {
+  const button = elementsOf(tree).find(element => element.type === 'Button' && element.props.key === id)
   if (button === undefined) {
-    throw new Error(`No button "${key}" in the band`)
+    throw new Error(`No button "${id}" in the band`)
   }
   return button
 }
 
-export async function press(tree: unknown, key: string): Promise<void> {
-  const onPress = buttonOf(tree, key).props.onPress as (e: unknown) => void
-  onPress({ surface: 'terminal', element: key })
+export async function press(tree: unknown, id: string): Promise<void> {
+  const onPress = buttonOf(tree, id).props.onPress as (e: unknown) => void
+  onPress({ surface: 'terminal', element: id })
   await settle()
 }
