@@ -34,7 +34,7 @@ claude plugin install prompt-dialect --marketplace marcelomiyake/prompt-dialect
 
 In the desktop app, where `/plugin` does not run: click **+** next to the prompt box, then **Plugins**, **Add marketplace** with `marcelomiyake/prompt-dialect`, then **Add plugin**.
 
-The desktop app runs its own bundled build of Claude Code, not the `claude` on your `PATH`, and updates it on its own schedule. Until that bundled build is 2.1.301 or later, the mod installs but does not run in the desktop app: no band and no `/dialect`, while a terminal session with a newer `claude` runs it. The folder the app keeps the build in is named after its version, for example `~/.config/Claude/claude-code/2.1.299/` on Linux.
+The desktop app runs its own bundled build of Claude Code, not the `claude` on your `PATH`, and updates it on its own schedule. Until that bundled build is 2.1.301 or later, the mod installs but does not run in the desktop app: no band and no `/dialect`, while a terminal session with a newer `claude` runs it. The app keeps that build in a folder named after its version, such as `2.1.299`, under its `claude-code` data folder.
 
 ## Usage and keyboard shortcuts
 
