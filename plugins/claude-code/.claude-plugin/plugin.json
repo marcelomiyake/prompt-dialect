@@ -22,7 +22,6 @@
     "anthropic",
     "claude"
   ],
-  "types": "./types/index.d.ts",
   "userConfig": {
     "checkAsYouType": {
       "type": "boolean",
