@@ -68,6 +68,55 @@ Set them in `/config`, or under `pluginConfigs` in your settings:
 - Clicking a fix replaces the whole draft with the fixed one, so the cursor moves to the end.
 - Languages written without spaces between words, such as Japanese and Chinese, are read in runs of characters between punctuation marks rather than in words: a short draft can be skipped as too short, and a fix underlines the whole run.
 
+## Examples
+
+Type each prompt below into Claude Code with the mod on, and pause. The fixes and rewrites come from a model, so the exact wording changes from run to run; what stays the same is listed under each one.
+
+### 1. Fix spelling and grammar in a coding request
+
+```
+can you refactor the auth module so it dont break when the token expire and add test for it
+```
+
+The band lists three fixes: `dont` → `doesn't`, `expire` → `expires`, and `test` → `tests`. Click one chip to apply that fix, or press **Fix all** (`a`) for the three at once. The result:
+
+```
+can you refactor the auth module so it doesn't break when the token expires and add tests for it
+```
+
+### 2. Leave code, paths and commands alone
+
+```
+@src/api/client.ts retrys the request forever when fetchUser() returns 503, make it stop after 3 try and run npm run test:unit
+```
+
+Only the prose is flagged: `retrys` → `retries` and `try` → `tries`, and usually a comma or `and` where the two clauses meet. The `@mention`, the path, `fetchUser()`, `503` and `npm run test:unit` are never underlined and come through a fix unchanged.
+
+### 3. Check a prompt in another language
+
+```
+adicione um teste para a função parseDate que verifica as datas invalidas e corrija os erro que encontrar
+```
+
+The check stays in Portuguese: `invalidas` → `inválidas` and `os erro` → `os erros`. `parseDate` is left as written, and nothing is translated.
+
+### 4. Rewrite a vague prompt for the session's model
+
+```
+fix the flaky test in the payments service
+```
+
+This draft has no mistakes, so the band shows only **✨ Improve for …**. Press it (`i`). The rewrite states the goal, asks Claude to find the cause of the flakiness rather than add retries or skip the test, and says how to confirm the fix. Where it cannot know a detail, it leaves a placeholder such as `[which test?]` or `[which test command?]` for you to fill in, instead of inventing one. Up to three notes under it say what changed. Press **Use it** (`u`) to put it in the prompt box, then replace the placeholders before you send it.
+
+## Testing notes for reviewers
+
+- **Version.** The mod needs Claude Code **2.1.301 or later**. Check with `claude --version`. On an older build it installs but never runs: no band appears, `/dialect` does not exist, and the reason (a missing `prompt.change` event) shows only in the debug log. The desktop app runs its own bundled Claude Code, so test in a terminal session unless that bundled build is also 2.1.301 or later.
+- **Install.** `claude plugin install prompt-dialect --marketplace marcelomiyake/prompt-dialect`, or from a checkout, `claude --plugin-dir plugins/claude-code`.
+- **No setup.** There is no API key or account to configure. The checks go through Claude Code's own API client and count toward the signed-in account's usage.
+- **Check it is on.** `/dialect` shows the status. Then try the [examples](#examples) above, in order.
+- **Keyboard path.** Hover needs the fullscreen terminal or the desktop app. In any other terminal, press `ctrl+x` `tab` to focus the band, then a chip's number, `a`, `i`, `u` or `c`.
+- **Turning it off.** `/dialect off` hides the band and stops all checks until `/dialect on`.
+
 ## Architecture and how it works
 
 The business logic does not know about Claude Code. It follows Domain-Driven Design and Clean Architecture so that other tools (Codex, Antigravity, OpenCode, VS Code, a CLI) can be added as adapters without touching it.
@@ -103,6 +152,12 @@ npm run test:plugin            # claude plugin test, inside Claude Code's engine
 claude --plugin-dir plugins/claude-code   # try it
 vhs docs/demo.tape                        # re-record docs/demo.gif (calls the model)
 ```
+
+## Support
+
+- **Questions and bugs:** [open an issue](https://github.com/marcelomiyake/prompt-dialect/issues). Include your Claude Code version and the plugin version.
+- **Security problems:** report them privately, as [SECURITY.md](SECURITY.md) describes. Do not open a public issue.
+- **Anything else:** email [marcelo.m.miyake@gmail.com](mailto:marcelo.m.miyake@gmail.com).
 
 ## Privacy
 
