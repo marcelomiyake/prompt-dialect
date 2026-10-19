@@ -6,11 +6,18 @@ import { TextSpan } from './text-span'
  * `original`, with `replacement`.
  */
 export class Suggestion {
+  /** Stable while the suggestion stays where it is; offsets make it unique per draft. */
+  readonly id: string
+  readonly isDeletion: boolean
+
   private constructor(
     readonly span: TextSpan,
     readonly original: string,
     readonly replacement: string,
-  ) {}
+  ) {
+    this.id = `${span.start}-${span.end}`
+    this.isDeletion = replacement.length === 0
+  }
 
   static create(span: TextSpan, original: string, replacement: string): Suggestion {
     if (original.length !== span.length) {
@@ -20,15 +27,6 @@ export class Suggestion {
       throw new RangeError(`A suggestion must change "${original}"`)
     }
     return new Suggestion(span, original, replacement)
-  }
-
-  /** Stable while the suggestion stays where it is; offsets make it unique per draft. */
-  get id(): string {
-    return `${this.span.start}-${this.span.end}`
-  }
-
-  get isDeletion(): boolean {
-    return this.replacement.length === 0
   }
 
   matches(text: string): boolean {

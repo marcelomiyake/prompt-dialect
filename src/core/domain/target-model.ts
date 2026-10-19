@@ -19,11 +19,18 @@ const VERSION = /^[\s_-]*(\d{1,2})(?!\d)(?:[._-](\d{1,2})(?!\d))?/
  * reports: an id, an alias, or a display name.
  */
 export class TargetModel {
+  readonly isKnown: boolean
+  /** How a person names it: `Opus 5.5`, `Sonnet`, or the raw id when unknown. */
+  readonly label: string
+
   private constructor(
     readonly raw: string,
     readonly family: ModelFamily | undefined,
     readonly version: string | undefined,
-  ) {}
+  ) {
+    this.isKnown = family !== undefined
+    this.label = labelOf(raw, family, version)
+  }
 
   static parse(raw: string): TargetModel {
     const found = FAMILY.exec(raw)
@@ -35,19 +42,14 @@ export class TargetModel {
     const version = parts === null ? undefined : [parts[1], parts[2]].filter(Boolean).join('.')
     return new TargetModel(raw, family, version)
   }
+}
 
-  get isKnown(): boolean {
-    return this.family !== undefined
+function labelOf(raw: string, family: ModelFamily | undefined, version: string | undefined): string {
+  if (family === undefined) {
+    return raw.trim() === '' ? 'Claude' : raw.trim()
   }
-
-  /** How a person names it: `Opus 5.5`, `Sonnet`, or the raw id when unknown. */
-  get label(): string {
-    if (this.family === undefined) {
-      return this.raw.trim() === '' ? 'Claude' : this.raw.trim()
-    }
-    const name = FAMILY_NAMES[this.family]
-    return this.version === undefined ? name : `${name} ${this.version}`
-  }
+  const name = FAMILY_NAMES[family]
+  return version === undefined ? name : `${name} ${version}`
 }
 
 /** Orders `5.10` after `5.9`; a missing part counts as zero. */

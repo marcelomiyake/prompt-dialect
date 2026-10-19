@@ -27,7 +27,7 @@ export class LruCache<K, V> {
     }
   }
 
-  get size(): number {
+  size(): number {
     return this.entries.size
   }
 }

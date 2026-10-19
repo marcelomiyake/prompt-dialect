@@ -6,12 +6,18 @@ import { TextSpan } from './text-span'
  * shapes; comparing the texts before and after works for all of them.
  */
 export class TextChange {
+  readonly isNone: boolean
+  readonly delta: number
+
   private constructor(
     /** The span of the text before the edit that the edit replaced. */
     readonly replaced: TextSpan,
     /** How many code units the edit put in its place. */
     readonly insertedLength: number,
-  ) {}
+  ) {
+    this.isNone = replaced.isEmpty && insertedLength === 0
+    this.delta = insertedLength - replaced.length
+  }
 
   static between(before: string, after: string): TextChange {
     const limit = Math.min(before.length, after.length)
@@ -25,14 +31,6 @@ export class TextChange {
     }
     const replaced = TextSpan.of(prefix, before.length - suffix)
     return new TextChange(replaced, after.length - suffix - prefix)
-  }
-
-  get isNone(): boolean {
-    return this.replaced.isEmpty && this.insertedLength === 0
-  }
-
-  get delta(): number {
-    return this.insertedLength - this.replaced.length
   }
 
   /**

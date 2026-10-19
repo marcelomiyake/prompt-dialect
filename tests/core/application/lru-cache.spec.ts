@@ -13,7 +13,7 @@ describe('LruCache', () => {
     expect(cache.get('b')).toBeUndefined()
     expect(cache.get('a')).toBe(1)
     expect(cache.get('c')).toBe(3)
-    expect(cache.size).toBe(2)
+    expect(cache.size()).toBe(2)
   })
 
   it('replaces a value set again', () => {
@@ -22,7 +22,7 @@ describe('LruCache', () => {
     cache.set('a', 2)
 
     expect(cache.get('a')).toBe(2)
-    expect(cache.size).toBe(1)
+    expect(cache.size()).toBe(1)
   })
 
   it('keeps a falsy value', () => {

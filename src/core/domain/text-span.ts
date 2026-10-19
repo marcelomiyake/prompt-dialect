@@ -3,24 +3,22 @@
  * every tool's editor uses for offsets, so it crosses adapters unchanged.
  */
 export class TextSpan {
+  readonly length: number
+  readonly isEmpty: boolean
+
   private constructor(
     readonly start: number,
     readonly end: number,
-  ) {}
+  ) {
+    this.length = end - start
+    this.isEmpty = start === end
+  }
 
   static of(start: number, end: number): TextSpan {
     if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < start) {
       throw new RangeError(`Invalid text span [${start}, ${end})`)
     }
     return new TextSpan(start, end)
-  }
-
-  get length(): number {
-    return this.end - this.start
-  }
-
-  get isEmpty(): boolean {
-    return this.start === this.end
   }
 
   shift(delta: number): TextSpan {

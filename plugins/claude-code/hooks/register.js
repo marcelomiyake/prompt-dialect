@@ -8,20 +8,18 @@ var TextSpan = class _TextSpan {
   constructor(start, end) {
     this.start = start;
     this.end = end;
+    this.length = end - start;
+    this.isEmpty = start === end;
   }
   start;
   end;
+  length;
+  isEmpty;
   static of(start, end) {
     if (!Number.isInteger(start) || !Number.isInteger(end) || start < 0 || end < start) {
       throw new RangeError(`Invalid text span [${start}, ${end})`);
     }
     return new _TextSpan(start, end);
-  }
-  get length() {
-    return this.end - this.start;
-  }
-  get isEmpty() {
-    return this.start === this.end;
   }
   shift(delta) {
     return _TextSpan.of(this.start + delta, this.end + delta);
@@ -49,9 +47,13 @@ var TextChange = class _TextChange {
   constructor(replaced, insertedLength) {
     this.replaced = replaced;
     this.insertedLength = insertedLength;
+    this.isNone = replaced.isEmpty && insertedLength === 0;
+    this.delta = insertedLength - replaced.length;
   }
   replaced;
   insertedLength;
+  isNone;
+  delta;
   static between(before, after) {
     const limit = Math.min(before.length, after.length);
     let prefix = 0;
@@ -64,12 +66,6 @@ var TextChange = class _TextChange {
     }
     const replaced = TextSpan.of(prefix, before.length - suffix);
     return new _TextChange(replaced, after.length - suffix - prefix);
-  }
-  get isNone() {
-    return this.replaced.isEmpty && this.insertedLength === 0;
-  }
-  get delta() {
-    return this.insertedLength - this.replaced.length;
   }
   /**
    * Where `span` of the text before the edit lies in the text after it, or
@@ -89,10 +85,15 @@ var Suggestion = class _Suggestion {
     this.span = span;
     this.original = original;
     this.replacement = replacement;
+    this.id = `${span.start}-${span.end}`;
+    this.isDeletion = replacement.length === 0;
   }
   span;
   original;
   replacement;
+  /** Stable while the suggestion stays where it is; offsets make it unique per draft. */
+  id;
+  isDeletion;
   static create(span, original, replacement) {
     if (original.length !== span.length) {
       throw new RangeError(`"${original}" does not fill a span of ${span.length} code units`);
@@ -101,13 +102,6 @@ var Suggestion = class _Suggestion {
       throw new RangeError(`A suggestion must change "${original}"`);
     }
     return new _Suggestion(span, original, replacement);
-  }
-  /** Stable while the suggestion stays where it is; offsets make it unique per draft. */
-  get id() {
-    return `${this.span.start}-${this.span.end}`;
-  }
-  get isDeletion() {
-    return this.replacement.length === 0;
   }
   matches(text) {
     return this.span.isWithin(text) && this.span.sliceOf(text) === this.original;
@@ -309,9 +303,11 @@ var GrammarReview = class _GrammarReview {
   constructor(text, suggestions) {
     this.text = text;
     this.suggestions = suggestions;
+    this.hasSuggestions = suggestions.length > 0;
   }
   text;
   suggestions;
+  hasSuggestions;
   static of(text, suggestions) {
     const ordered = suggestions.filter((suggestion) => suggestion.matches(text)).toSorted((left, right) => left.span.start - right.span.start);
     const kept = [];
@@ -328,9 +324,6 @@ var GrammarReview = class _GrammarReview {
   }
   static clean(text) {
     return new _GrammarReview(text, []);
-  }
-  get hasSuggestions() {
-    return this.suggestions.length > 0;
   }
   isFor(text) {
     return this.text === text;
@@ -522,7 +515,7 @@ var LruCache = class {
       this.entries.delete(oldest);
     }
   }
-  get size() {
+  size() {
     return this.entries.size;
   }
 };
@@ -588,19 +581,18 @@ var PromptImprovement = class _PromptImprovement {
     this.improved = improved;
     this.notes = notes;
     this.target = target;
+    this.changesAnything = improved.trim() !== original.trim();
   }
   original;
   improved;
   notes;
   target;
+  changesAnything;
   static of(original, improved, notes, target) {
     if (improved.trim() === "") {
       throw new RangeError("An improved prompt cannot be empty");
     }
     return new _PromptImprovement(original, improved, notes, target);
-  }
-  get changesAnything() {
-    return this.improved.trim() !== this.original.trim();
   }
 };
 
@@ -661,10 +653,15 @@ var TargetModel = class _TargetModel {
     this.raw = raw;
     this.family = family;
     this.version = version;
+    this.isKnown = family !== void 0;
+    this.label = labelOf(raw, family, version);
   }
   raw;
   family;
   version;
+  isKnown;
+  /** How a person names it: `Opus 5.5`, `Sonnet`, or the raw id when unknown. */
+  label;
   static parse(raw) {
     const found = FAMILY.exec(raw);
     if (found === null) {
@@ -675,18 +672,14 @@ var TargetModel = class _TargetModel {
     const version = parts === null ? void 0 : [parts[1], parts[2]].filter(Boolean).join(".");
     return new _TargetModel(raw, family, version);
   }
-  get isKnown() {
-    return this.family !== void 0;
-  }
-  /** How a person names it: `Opus 5.5`, `Sonnet`, or the raw id when unknown. */
-  get label() {
-    if (this.family === void 0) {
-      return this.raw.trim() === "" ? "Claude" : this.raw.trim();
-    }
-    const name = FAMILY_NAMES[this.family];
-    return this.version === void 0 ? name : `${name} ${this.version}`;
-  }
 };
+function labelOf(raw, family, version) {
+  if (family === void 0) {
+    return raw.trim() === "" ? "Claude" : raw.trim();
+  }
+  const name = FAMILY_NAMES[family];
+  return version === void 0 ? name : `${name} ${version}`;
+}
 function compareVersions(left, right) {
   const a = left.split(".").map(Number);
   const b = right.split(".").map(Number);

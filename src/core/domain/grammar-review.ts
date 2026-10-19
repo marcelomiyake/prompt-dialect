@@ -8,10 +8,14 @@ import { TextChange } from './text-change'
  * what it proposes to replace.
  */
 export class GrammarReview {
+  readonly hasSuggestions: boolean
+
   private constructor(
     readonly text: string,
     readonly suggestions: readonly Suggestion[],
-  ) {}
+  ) {
+    this.hasSuggestions = suggestions.length > 0
+  }
 
   static of(text: string, suggestions: readonly Suggestion[]): GrammarReview {
     const ordered = suggestions
@@ -33,10 +37,6 @@ export class GrammarReview {
 
   static clean(text: string): GrammarReview {
     return new GrammarReview(text, [])
-  }
-
-  get hasSuggestions(): boolean {
-    return this.suggestions.length > 0
   }
 
   isFor(text: string): boolean {
