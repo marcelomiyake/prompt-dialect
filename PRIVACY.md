@@ -60,4 +60,4 @@ Changes to this policy are made in this file, and its history is public in the r
 
 ## Contact
 
-Open an issue at <https://github.com/marcelomiyake/prompt-dialect/issues>.
+Questions about this policy or your data: email [marcelo.m.miyake@gmail.com](mailto:marcelo.m.miyake@gmail.com), or open an issue at <https://github.com/marcelomiyake/prompt-dialect/issues>.
