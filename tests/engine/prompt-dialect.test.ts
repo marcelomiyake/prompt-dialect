@@ -109,8 +109,8 @@ describe('the band above the prompt', () => {
     }
   })
 
-  test('says on each surface that a folded paste is not checked', async ($, on) => {
-    const draft = '[Pasted text #1 +10 lines]'
+  test('says on each surface that a folded paste is not checked, and offers no rewrite', async ($, on) => {
+    const draft = `${DRAFT} [Pasted text #1 +10 lines]`
     on('state.get', { plugin: 'prompt-dialect', key: 'session' }, () => ({
       value: {
         value: { draft, review: null, improvement: null, dismissed: null, failure: null, isEnabled: true },

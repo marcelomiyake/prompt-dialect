@@ -67,11 +67,13 @@ describe('bandView', () => {
     expect(view.improvement).toMatchObject({ kind: 'ready', lines: ['a', '', 'b'], hiddenLines: 0 })
   })
 
-  it('says a folded paste is not checked, and how to expand it', () => {
+  it('says a folded paste is not checked, and offers no rewrite until it is expanded', () => {
     const view = bandView(input({ draft: `${DRAFT}: [Pasted text #1 +10 lines]`, review: undefined }))
 
-    expect(view.pasteNote).toBe('Pasted text #1 is folded, so it is not checked. Paste it again to expand it.')
-    expect(view.improvement).toEqual({ kind: 'offer', label: 'Improve for Opus 5.5' })
+    expect(view.pasteNote).toBe(
+      'Pasted text #1 is folded, so it is not checked and the prompt cannot be improved. Paste it again to expand it.',
+    )
+    expect(view.improvement).toEqual({ kind: 'none' })
   })
 
   it('shows only the note when too few words are typed around a folded paste', () => {
@@ -85,7 +87,7 @@ describe('bandView', () => {
     const draft = 'Merge [Pasted text #1 +3 lines] and [Pasted text #2] into [Pasted text #4 +12 lines]'
 
     expect(bandView(input({ draft })).pasteNote).toBe(
-      'Pasted texts #1, #2 and #4 are folded, so they are not checked. Paste the last one again to expand it.',
+      'Pasted texts #1, #2 and #4 are folded, so they are not checked and the prompt cannot be improved. Paste the last one again to expand it.',
     )
   })
 
