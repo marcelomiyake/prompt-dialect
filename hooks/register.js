@@ -890,7 +890,7 @@ function drawBand(ui, view, actions) {
       hover: { display: "flex", scope: chip.scope }
     },
     chip.preview.map((segment) => drawSegment(Text, segment))
-  ))), drawImprovement(ui, view.improvement, actions));
+  ))), view.pasteNote !== "" && /* @__PURE__ */ h(Text, { dimColor: true }, view.pasteNote), drawImprovement(ui, view.improvement, actions));
 }
 function drawChip(ui, chip, actions) {
   const { Button, Text } = ui;
@@ -950,19 +950,33 @@ function decorationsFor(review) {
   }));
 }
 
+// src/adapters/claude-code/pastes.ts
+var FOLDED_PASTE = /\[Pasted text #(\d+)(?: \+\d+ lines)?\]/g;
+function foldedPastes(draft) {
+  return [...draft.matchAll(FOLDED_PASTE)].map((match) => `#${match[1]}`);
+}
+function judgeTypedText(draft) {
+  return judgeDraft(draft.replaceAll(FOLDED_PASTE, " "));
+}
+
 // src/adapters/claude-code/presenter.ts
 var HIDDEN = {
   isVisible: false,
   status: "",
   chips: [],
   hint: "",
-  improvement: { kind: "message", text: "" }
+  pasteNote: "",
+  improvement: { kind: "none" }
 };
 var MAX_HOTKEYS = 9;
 var ELLIPSIS = "…";
 function bandView(input) {
-  if (!input.isEnabled || input.isDismissed || judgeDraft(input.draft) !== "reviewable") {
+  if (!input.isEnabled || input.isDismissed) {
     return HIDDEN;
+  }
+  const pasteNote = pasteNoteFor(input.draft);
+  if (judgeTypedText(input.draft) !== "reviewable") {
+    return pasteNote === "" ? HIDDEN : { ...HIDDEN, isVisible: true, pasteNote };
   }
   const review = input.review?.isFor(input.draft) ? input.review : void 0;
   const chips = (review?.suggestions ?? []).map(
@@ -973,8 +987,20 @@ function bandView(input) {
     status: statusOf(review, input.isReviewFresh, input.failure),
     chips,
     hint: chips.length === 0 ? "" : hintFor(input.isPointerAvailable, chips.length),
+    pasteNote,
     improvement: improvementViewOf(input)
   };
+}
+function pasteNoteFor(draft) {
+  const pastes = foldedPastes(draft);
+  if (pastes.length === 0) {
+    return "";
+  }
+  if (pastes.length === 1) {
+    return `Pasted text ${pastes[0]} is folded, so it is not checked. Paste it again to expand it.`;
+  }
+  const names = `${pastes.slice(0, -1).join(", ")} and ${pastes.at(-1)}`;
+  return `Pasted texts ${names} are folded, so they are not checked. Paste the last one again to expand it.`;
 }
 function statusOf(review, isFresh, failure) {
   if (review?.hasSuggestions) {
@@ -1253,7 +1279,7 @@ function stopChecking() {
 async function checkDraft($, settings) {
   const changes = boxChanges;
   const box = await $.prompt.read();
-  if (judgeDraft(box.text) !== "reviewable") {
+  if (judgeTypedText(box.text) !== "reviewable") {
     return;
   }
   const controller = new AbortController();

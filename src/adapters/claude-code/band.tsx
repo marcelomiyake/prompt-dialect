@@ -26,7 +26,8 @@ const TONE_STYLE: Readonly<Record<Segment['tone'], TextProps>> = {
 
 /**
  * The band above the prompt: the words to fix as chips (hover one for its fix
- * in context, press it to apply), the model-aware rewrite, and its result.
+ * in context, press it to apply), the pastes it could not read, the
+ * model-aware rewrite, and its result.
  */
 export function drawBand(ui: BandElements, view: BandView, actions: BandActions): RenderElement {
   const { Box, Text, Button } = ui
@@ -58,6 +59,7 @@ export function drawBand(ui: BandElements, view: BandView, actions: BandActions)
           ))}
         </Box>
       )}
+      {view.pasteNote !== '' && <Text dimColor>{view.pasteNote}</Text>}
       {drawImprovement(ui, view.improvement, actions)}
     </Box>
   )

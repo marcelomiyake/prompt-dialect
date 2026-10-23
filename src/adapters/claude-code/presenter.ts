@@ -1,4 +1,5 @@
-import { judgeDraft, type GrammarReview, type Suggestion } from '../../core'
+import type { GrammarReview, Suggestion } from '../../core'
+import { foldedPastes, judgeTypedText } from './pastes'
 import type { ImprovementState } from './plugin-state'
 
 /** A run of preview text: unchanged context, words a fix removes, or words it adds. */
@@ -24,6 +25,7 @@ export type ImprovementView =
       readonly notes: readonly string[]
     }
   | { readonly kind: 'message'; readonly text: string }
+  | { readonly kind: 'none' }
 
 export type BandView = {
   readonly isVisible: boolean
@@ -31,6 +33,8 @@ export type BandView = {
   readonly status: string
   readonly chips: readonly ChipView[]
   readonly hint: string
+  /** One dim line naming the pastes folded out of the mod's sight, or '' when there are none. */
+  readonly pasteNote: string
   readonly improvement: ImprovementView
 }
 
@@ -54,15 +58,20 @@ const HIDDEN: BandView = {
   status: '',
   chips: [],
   hint: '',
-  improvement: { kind: 'message', text: '' },
+  pasteNote: '',
+  improvement: { kind: 'none' },
 }
 const MAX_HOTKEYS = 9
 const ELLIPSIS = '…'
 
 /** What the band above the prompt shows for the draft as it stands. */
 export function bandView(input: BandInput): BandView {
-  if (!input.isEnabled || input.isDismissed || judgeDraft(input.draft) !== 'reviewable') {
+  if (!input.isEnabled || input.isDismissed) {
     return HIDDEN
+  }
+  const pasteNote = pasteNoteFor(input.draft)
+  if (judgeTypedText(input.draft) !== 'reviewable') {
+    return pasteNote === '' ? HIDDEN : { ...HIDDEN, isVisible: true, pasteNote }
   }
   const review = input.review?.isFor(input.draft) ? input.review : undefined
   const chips = (review?.suggestions ?? []).map((suggestion, index) =>
@@ -73,8 +82,22 @@ export function bandView(input: BandInput): BandView {
     status: statusOf(review, input.isReviewFresh, input.failure),
     chips,
     hint: chips.length === 0 ? '' : hintFor(input.isPointerAvailable, chips.length),
+    pasteNote,
     improvement: improvementViewOf(input),
   }
+}
+
+/** Claude Code keeps a folded paste's text from the mod, so the band says what it could not check. */
+function pasteNoteFor(draft: string): string {
+  const pastes = foldedPastes(draft)
+  if (pastes.length === 0) {
+    return ''
+  }
+  if (pastes.length === 1) {
+    return `Pasted text ${pastes[0]} is folded, so it is not checked. Paste it again to expand it.`
+  }
+  const names = `${pastes.slice(0, -1).join(', ')} and ${pastes.at(-1)}`
+  return `Pasted texts ${names} are folded, so they are not checked. Paste the last one again to expand it.`
 }
 
 function statusOf(review: GrammarReview | undefined, isFresh: boolean, failure: string | undefined): string {
