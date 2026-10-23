@@ -38,16 +38,16 @@ The desktop app runs its own bundled build of Claude Code, not the `claude` on y
 
 ## Usage and keyboard shortcuts
 
-| To                              | Do                                                                                                 |
-| ------------------------------- | -------------------------------------------------------------------------------------------------- |
-| Check a prompt                  | Type it and pause. Drafts under three words, `/commands` and `!shell` lines are skipped.           |
-| Check a long paste              | Paste it again to expand its `[Pasted text #1]` placeholder, then pause.                           |
-| See a fix                       | Hover the underlined word's chip in the band (fullscreen terminal or desktop).                     |
-| Apply a fix                     | Click the chip. From the keyboard, press `ctrl+x` `tab` to focus the band, then the chip's number. |
-| Apply every fix                 | **Fix all** (`a` while the band has focus).                                                        |
-| Rewrite for the session's model | **✨ Improve for …** (`i`), then **Use it** (`u`) or **Copy** (`c`).                               |
-| Hide the band for this draft    | **Hide**. It comes back when you edit the draft.                                                   |
-| Turn checking off or on         | `/dialect off`, `/dialect on`. `/dialect` alone shows the status.                                  |
+| To                              | Do                                                                                                    |
+| ------------------------------- | ----------------------------------------------------------------------------------------------------- |
+| Check a prompt                  | Type it and pause. Drafts under three words, `/commands` and `!shell` lines are skipped.              |
+| Check a long paste              | Paste it again, or change it in your editor (`ctrl+g`), to expand its `[Pasted text #1]` placeholder. |
+| See a fix                       | Hover the underlined word's chip in the band (fullscreen terminal or desktop).                        |
+| Apply a fix                     | Click the chip. From the keyboard, press `ctrl+x` `tab` to focus the band, then the chip's number.    |
+| Apply every fix                 | **Fix all** (`a` while the band has focus).                                                           |
+| Rewrite for the session's model | **✨ Improve for …** (`i`), then **Use it** (`u`) or **Copy** (`c`).                                  |
+| Hide the band for this draft    | **Hide**. It comes back when you edit the draft.                                                      |
+| Turn checking off or on         | `/dialect off`, `/dialect on`. `/dialect` alone shows the status.                                     |
 
 The checks call the model through Claude Code's own API client, so they count toward your usage like any other request: one short call per pause, and one call for each rewrite you ask for. A draft you have already checked is answered from a cache.
 
@@ -65,7 +65,7 @@ Set them in `/config`, or under `pluginConfigs` in your settings:
 ### Known limitations
 
 - Underlines appear as soon as the check returns when the cursor is at the end of a short draft. Otherwise they appear on your next keystroke or cursor move, because repainting the box would move the cursor or fold a long draft into a paste placeholder.
-- Claude Code folds a long paste into a placeholder such as `[Pasted text #1 +10 lines]` and does not give mods the text behind it, so the check and the rewrite cannot read it. The band says which pastes it could not read, and offers no rewrite while one is folded, because the rewrite would leave the paste out. Paste the same text again to expand the placeholder, and the next check reads it. The words you type around a folded paste are still checked.
+- Claude Code folds a long paste into a placeholder such as `[Pasted text #1 +10 lines]` and does not give mods the text behind it, so the check and the rewrite cannot read it. The band says which pastes it could not read, and offers no rewrite while one is folded, because the rewrite would leave the paste out. Paste the same text again to expand the placeholder, and the next check reads it. Or press `ctrl+g` and change the paste in your editor: Claude Code expands each paste you change, and folds back any you save unchanged. The words you type around a folded paste are still checked.
 - Hover needs a pointer: the fullscreen terminal or the desktop app. Everywhere else, use the keyboard path above.
 - Clicking a fix replaces the whole draft with the fixed one, so the cursor moves to the end.
 - Languages written without spaces between words, such as Japanese and Chinese, are read in runs of characters between punctuation marks rather than in words: a short draft can be skipped as too short, and a fix underlines the whole run.

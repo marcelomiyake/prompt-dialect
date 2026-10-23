@@ -97,10 +97,10 @@ function pasteNoteFor(pastes: readonly string[]): string {
     return ''
   }
   if (pastes.length === 1) {
-    return `Pasted text ${pastes[0]} is folded, so it is not checked and the prompt cannot be improved. Paste it again to expand it.`
+    return `Pasted text ${pastes[0]} is folded, so it is not checked and the prompt cannot be improved. To expand it, paste it again or change it in your editor (ctrl+g).`
   }
   const names = `${pastes.slice(0, -1).join(', ')} and ${pastes.at(-1)}`
-  return `Pasted texts ${names} are folded, so they are not checked and the prompt cannot be improved. Paste the last one again to expand it.`
+  return `Pasted texts ${names} are folded, so they are not checked and the prompt cannot be improved. Paste the last one again to expand it, or change each in your editor (ctrl+g).`
 }
 
 function statusOf(review: GrammarReview | undefined, isFresh: boolean, failure: string | undefined): string {
