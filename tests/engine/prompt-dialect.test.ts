@@ -109,6 +109,24 @@ describe('the band above the prompt', () => {
     }
   })
 
+  test('says on each surface that a folded paste is not checked', async ($, on) => {
+    const draft = '[Pasted text #1 +10 lines]'
+    on('state.get', { plugin: 'prompt-dialect', key: 'session' }, () => ({
+      value: {
+        value: { draft, review: null, improvement: null, dismissed: null, failure: null, isEnabled: true },
+        version: 1,
+      },
+    }))
+    await boot($, on)
+
+    for (const surface of SURFACES) {
+      const ui = await $.ui.mount({ ...BAND, surface })
+      expect(await ui.find({ text: /Pasted text #1 is folded/ })).toBeDefined()
+      expect(await ui.find({ key: 'improve' })).toBeUndefined()
+      await ui.unmount()
+    }
+  })
+
   test('rewrites the draft for the session model when Improve is pressed', async ($, on) => {
     let state: DialectState = {
       draft: DRAFT,

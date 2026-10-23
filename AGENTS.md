@@ -20,7 +20,7 @@ src/adapters/<tool>/  ──▶  src/core/application/  ──▶  src/core/doma
 - `src/core/domain/`: the model. `TextSpan`, `TextChange`, `Suggestion`, the `GrammarReview` aggregate, `TargetModel`, `PromptingGuide` and its catalog, and `PromptImprovement`. It imports nothing outside `domain/`.
 - `src/core/application/`: the use cases `CheckGrammar` and `ImprovePrompt`, the prompts sent to the model, reply parsing, and the `LanguageModel` port in `ports/`. It imports only from `domain/` and `application/`.
 - `src/core/index.ts`: the core's public surface. Adapters import from here, never from deeper files.
-- `src/adapters/claude-code/`: the Claude Code mod. `register.tsx` is the composition root and the only file that touches the engine's `$`. `presenter.ts` (view model), `band.tsx` (drawing), `decorations.ts`, `review-state.ts` and `settings.ts` are free of `$`.
+- `src/adapters/claude-code/`: the Claude Code mod. `register.tsx` is the composition root and the only file that touches the engine's `$`. `presenter.ts` (view model), `band.tsx` (drawing), `decorations.ts`, `pastes.ts` (the paste placeholders Claude Code folds into the box), `review-state.ts` and `settings.ts` are free of `$`.
 
 Rules that keep it that way:
 

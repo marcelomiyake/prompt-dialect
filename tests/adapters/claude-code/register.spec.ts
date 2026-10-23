@@ -7,6 +7,8 @@ const REVISED = 'Can you change the window in prompts?'
 const IMPROVED = 'Change the prompt window so it underlines mistakes.\nKeep the current colors.'
 const OTHER = 'Please make the login page load faster.'
 const BLOCKED = 'model blocked'
+/** What the box shows for a long paste; the pasted text itself never reaches the mod. */
+const FOLDED = '[Pasted text #1 +10 lines]'
 /** DRAFT with its first fix taken. */
 const FIRST_FIXED = 'Can you change the window for prompts?'
 
@@ -189,6 +191,14 @@ describe('checking as the person types', () => {
     expect(engine.modelRequests).toHaveLength(0)
   })
 
+  it('checks only the words typed around a folded paste', async () => {
+    await typeAndPause(`Summarize ${FOLDED}`)
+    expect(engine.modelRequests).toHaveLength(0)
+
+    await typeAndPause(`${DRAFT} ${FOLDED}`)
+    expect(engine.modelRequests).toHaveLength(1)
+  })
+
   it.each([
     [{ isAnswered: false, reason: 'api-error', status: 429, error: 'rate_limit' }, 'rate_limit (429)'],
     [{ isAnswered: false, reason: 'api-error', status: null, error: 'unknown' }, 'unknown (no response)'],
@@ -264,6 +274,15 @@ describe('the band above the prompt', () => {
 
     await typeAndPause(DRAFT)
     expect(await engine.renderBand({ hasSurvey: true })).toBe('engine')
+  })
+
+  it('says it cannot read a folded paste, without offering to check or rewrite it', async () => {
+    await typeAndPause(FOLDED)
+
+    const band = await engine.renderBand()
+
+    expect(textOf(band)).toContain('Pasted text #1 is folded, so it is not checked. Paste it again to expand it.')
+    expect(textOf(band)).not.toContain('Improve for')
   })
 
   it('offers a rewrite for the session model before the check is back', async () => {

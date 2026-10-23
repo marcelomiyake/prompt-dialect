@@ -6,13 +6,13 @@ import {
   LruCache,
   TargetModel,
   defaultPromptingGuides,
-  judgeDraft,
   type GrammarReview,
   type ImprovePromptOutcome,
   type LanguageModel,
 } from '../../core'
 import { drawBand, type BandActions } from './band'
 import { decorationsFor } from './decorations'
+import { judgeTypedText } from './pastes'
 import type { DialectState, ImprovementState } from './plugin-state'
 import { bandView } from './presenter'
 import { reviewFromState, reviewToState } from './review-state'
@@ -179,7 +179,7 @@ function stopChecking(): void {
 async function checkDraft($: EngineInterface, settings: Settings): Promise<void> {
   const changes = boxChanges
   const box = await $.prompt.read()
-  if (judgeDraft(box.text) !== 'reviewable') {
+  if (judgeTypedText(box.text) !== 'reviewable') {
     return
   }
   const controller = new AbortController()
