@@ -12,7 +12,7 @@ import {
 } from '../../core'
 import { drawBand, type BandActions } from './band'
 import { decorationsFor } from './decorations'
-import { judgeTypedText } from './pastes'
+import { foldedPastes, judgeTypedText } from './pastes'
 import type { DialectState, ImprovementState } from './plugin-state'
 import { bandView } from './presenter'
 import { reviewFromState, reviewToState } from './review-state'
@@ -296,12 +296,18 @@ async function dismissBand($: EngineInterface): Promise<void> {
   await update($, session, state => ({ ...state, dismissed: box.text }))
 }
 
-/** Rewrites the draft in the box; a newer request supersedes it, and its result is dropped. */
+/**
+ * Rewrites the draft in the box; a newer request supersedes it, and its result
+ * is dropped. Never while a paste is folded, since the rewrite would leave it out.
+ */
 async function improveDraft($: EngineInterface, settings: Settings): Promise<void> {
   runningImprovement?.abort()
   const controller = new AbortController()
   runningImprovement = controller
   const box = await $.prompt.read()
+  if (foldedPastes(box.text).length > 0) {
+    return
+  }
   const target = TargetModel.parse(await $.session.model())
   const working: ImprovementState = { status: 'working', draft: box.text, target: target.label }
   await update($, session, state => (runningImprovement === controller ? { ...state, improvement: working } : state))

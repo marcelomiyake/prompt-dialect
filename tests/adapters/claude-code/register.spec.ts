@@ -281,8 +281,18 @@ describe('the band above the prompt', () => {
 
     const band = await engine.renderBand()
 
-    expect(textOf(band)).toContain('Pasted text #1 is folded, so it is not checked. Paste it again to expand it.')
+    expect(textOf(band)).toContain('Pasted text #1 is folded, so it is not checked and the prompt cannot be improved.')
     expect(textOf(band)).not.toContain('Improve for')
+  })
+
+  it('checks the words around a folded paste, but offers no rewrite that would leave it out', async () => {
+    await typeAndPause(`${DRAFT} ${FOLDED}`)
+
+    const band = await engine.renderBand()
+
+    expect(engine.modelRequests).toEqual([expect.objectContaining({ effort: 'low' })])
+    expect(textOf(band)).toContain('Pasted text #1 is folded')
+    expect(() => buttonOf(band, 'improve')).toThrow()
   })
 
   it('offers a rewrite for the session model before the check is back', async () => {
@@ -570,6 +580,17 @@ describe('the band above the prompt', () => {
     await press(await engine.renderBand(), 'improve')
 
     expect(textOf(await engine.renderBand())).toContain(message)
+  })
+
+  it('does not rewrite a draft that a paste was folded into after the band was drawn', async () => {
+    await engine.type(DRAFT)
+    const band = await engine.renderBand()
+    engine.box = { text: `${DRAFT} ${FOLDED}`, cursor: DRAFT.length + FOLDED.length + 1 }
+
+    await press(band, 'improve')
+
+    expect(engine.modelRequests).toHaveLength(0)
+    expect(engine.session?.improvement).toBeNull()
   })
 
   it('reports a draft too short to rewrite', async () => {

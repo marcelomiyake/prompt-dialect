@@ -69,9 +69,10 @@ export function bandView(input: BandInput): BandView {
   if (!input.isEnabled || input.isDismissed) {
     return HIDDEN
   }
-  const pasteNote = pasteNoteFor(input.draft)
+  const pastes = foldedPastes(input.draft)
+  const pasteNote = pasteNoteFor(pastes)
   if (judgeTypedText(input.draft) !== 'reviewable') {
-    return pasteNote === '' ? HIDDEN : { ...HIDDEN, isVisible: true, pasteNote }
+    return pastes.length === 0 ? HIDDEN : { ...HIDDEN, isVisible: true, pasteNote }
   }
   const review = input.review?.isFor(input.draft) ? input.review : undefined
   const chips = (review?.suggestions ?? []).map((suggestion, index) =>
@@ -83,21 +84,23 @@ export function bandView(input: BandInput): BandView {
     chips,
     hint: chips.length === 0 ? '' : hintFor(input.isPointerAvailable, chips.length),
     pasteNote,
-    improvement: improvementViewOf(input),
+    improvement: pastes.length === 0 ? improvementViewOf(input) : { kind: 'none' },
   }
 }
 
-/** Claude Code keeps a folded paste's text from the mod, so the band says what it could not check. */
-function pasteNoteFor(draft: string): string {
-  const pastes = foldedPastes(draft)
+/**
+ * Claude Code keeps a folded paste's text from the mod, so the band says what
+ * it could not check, and why it offers no rewrite: one would leave the paste out.
+ */
+function pasteNoteFor(pastes: readonly string[]): string {
   if (pastes.length === 0) {
     return ''
   }
   if (pastes.length === 1) {
-    return `Pasted text ${pastes[0]} is folded, so it is not checked. Paste it again to expand it.`
+    return `Pasted text ${pastes[0]} is folded, so it is not checked and the prompt cannot be improved. Paste it again to expand it.`
   }
   const names = `${pastes.slice(0, -1).join(', ')} and ${pastes.at(-1)}`
-  return `Pasted texts ${names} are folded, so they are not checked. Paste the last one again to expand it.`
+  return `Pasted texts ${names} are folded, so they are not checked and the prompt cannot be improved. Paste the last one again to expand it.`
 }
 
 function statusOf(review: GrammarReview | undefined, isFresh: boolean, failure: string | undefined): string {
