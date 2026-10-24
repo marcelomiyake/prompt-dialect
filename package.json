@@ -1,6 +1,6 @@
 {
   "name": "prompt-dialect",
-  "version": "0.1.0",
+  "version": "1.0.0",
   "private": true,
   "description": "Grammar fixes and model-aware prompt improvements for AI coding tools, with a Claude Code mod as the first adapter.",
   "keywords": [
