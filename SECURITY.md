@@ -6,7 +6,7 @@ prompt-dialect is maintained on its latest release only. Security fixes land on 
 
 | Version        | Supported |
 | -------------- | --------- |
-| 0.1.x (latest) | Yes       |
+| Latest release | Yes       |
 | Older          | No        |
 
 ## Reporting a vulnerability
