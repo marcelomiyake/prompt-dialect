@@ -3,3 +3,4 @@ node_modules
 types
 hooks/register.js
 .claude-plugin/types
+CHANGELOG.md
