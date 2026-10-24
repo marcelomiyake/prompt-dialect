@@ -2,7 +2,9 @@
   "name": "prompt-dialect",
   "version": "0.1.0",
   "description": "Underlines mistakes in your prompt as you type, fixes them with a click, and rewrites the prompt for the Claude model you are using.",
-  "author": { "name": "Marcelo Masahiko Miyake" },
+  "author": {
+    "name": "Marcelo Masahiko Miyake"
+  },
   "homepage": "https://github.com/marcelomiyake/prompt-dialect",
   "repository": "https://github.com/marcelomiyake/prompt-dialect",
   "license": "MIT",
