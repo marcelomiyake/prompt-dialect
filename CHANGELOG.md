@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.1.0](https://github.com/marcelomiyake/prompt-dialect/compare/v1.0.0...v1.1.0) (2026-11-03)
+
+
+### Features
+
+* **guides:** add subagent split and consistent-rules guidelines ([b2b40b9](https://github.com/marcelomiyake/prompt-dialect/commit/b2b40b93ec0559245930992a5bb4638377c34fbd))
+
 ## [1.0.0](https://github.com/marcelomiyake/prompt-dialect/compare/v0.1.0...v1.0.0) (2026-10-24)
 
 
