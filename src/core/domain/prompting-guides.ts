@@ -18,6 +18,8 @@ export const GENERAL_GUIDE: PromptingGuide = {
     'State what "done" means and how to check it, such as the tests or build to run.',
     'Say whether you want ideas, a plan, or the change itself; for a question or a problem description, ask for an assessment rather than a fix.',
     'Keep the scope explicit: what is in, and what to leave alone.',
+    'When asking for subagents, split the work by what each needs to know rather than by kind of task: give each an independent piece (a separate research path, a component with a clean interface, a black-box check) and ask for a compact result, keeping tightly linked steps in the main session.',
+    'Keep one consistent set of instructions: drop rules that contradict each other or that only worked around an older model.',
     'Use calm, normal emphasis; all-caps and repeated "CRITICAL" or "MUST" make current models overreact.',
   ],
 }
