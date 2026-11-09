@@ -1,3 +1,5 @@
+import { piecesOf } from '../domain/words'
+
 /** Why a draft is not sent to a model, or `reviewable` when it is. */
 export type DraftVerdict = 'reviewable' | 'empty' | 'too-short' | 'too-long' | 'command' | 'shell'
 
@@ -10,7 +12,7 @@ export type DraftPolicyOptions = {
 
 export const DEFAULT_DRAFT_POLICY: DraftPolicyOptions = { minWords: 3, maxLength: 6000 }
 
-const WORD = /[\p{L}\p{N}]+/gu
+const WORD = /[\p{L}\p{M}\p{N}]+/gu
 
 /**
  * Which drafts are worth reviewing: prose a person is writing, not a slash
@@ -30,6 +32,6 @@ export function judgeDraft(text: string, options: DraftPolicyOptions = DEFAULT_D
   if (trimmed.length > options.maxLength) {
     return 'too-long'
   }
-  const words = trimmed.match(WORD)?.length ?? 0
+  const words = piecesOf(trimmed, WORD).length
   return words < options.minWords ? 'too-short' : 'reviewable'
 }
