@@ -1162,8 +1162,6 @@ function clampedOr(value, fallback) {
 var TOOL = "Claude Code";
 var ENABLED_STORE_KEY = "isEnabled";
 var MODEL_TIMEOUT_MS = 3e4;
-var MAX_REPAINT_LENGTH = 800;
-var MAX_REPAINT_LINES = 3;
 var INITIAL_STATE = {
   draft: "",
   review: null,
@@ -1228,7 +1226,10 @@ function register(on, options) {
     }
     boxChanges += 1;
     const result = await next(e);
-    await followDraft($, e.text, settings);
+    const review = await followDraft($, e.text, settings);
+    if (review?.hasSuggestions) {
+      await paint($, review);
+    }
     return result;
   });
   on("ui.render", { component: "AbovePrompt" }, async ($, e, next) => {
@@ -1320,18 +1321,12 @@ async function checkDraft($, settings) {
     return;
   }
   await update($, session, (state) => ({ ...state, draft: box.text, failure: null, review: reviewToState(review, true) }));
-  if (review.hasSuggestions) {
-    await repaint($, review, changes);
+  if (boxChanges === changes) {
+    await paint($, review);
   }
 }
-async function repaint($, review, changes) {
-  const box = await $.prompt.read();
-  if (boxChanges === changes && box.text === review.text && canRepaint(box)) {
-    await $.prompt.fill({ text: box.text, mode: "replace", decorations: decorationsFor(review) });
-  }
-}
-function canRepaint(box) {
-  return box.cursor === box.text.length && box.text.length <= MAX_REPAINT_LENGTH && box.text.split("\n").length <= MAX_REPAINT_LINES;
+async function paint($, review) {
+  await $.prompt.paint({ text: review.text, decorations: decorationsFor(review) });
 }
 async function acceptSuggestion($, id, settings) {
   const changes = boxChanges;
