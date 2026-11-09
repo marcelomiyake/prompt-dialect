@@ -133,16 +133,32 @@ var Suggestion = class _Suggestion {
   }
 };
 
+// src/core/domain/words.ts
+var UNSPACED = /[\p{scx=Han}\p{scx=Hiragana}\p{scx=Katakana}\p{scx=Thai}\p{scx=Lao}\p{scx=Khmer}\p{scx=Myanmar}]/u;
+function wordSegmenter(intl) {
+  return intl?.Segmenter === void 0 ? null : new intl.Segmenter(void 0, { granularity: "word" });
+}
+var RUNTIME_SEGMENTER = wordSegmenter(globalThis.Intl);
+function piecesOf(text, pattern, segmenter = RUNTIME_SEGMENTER) {
+  return Array.from(text.matchAll(pattern), (match) => {
+    const piece = { text: match[0], start: match.index, end: match.index + match[0].length };
+    return segmenter !== null && UNSPACED.test(piece.text) ? split(piece, segmenter) : [piece];
+  }).flat();
+}
+function split(piece, segmenter) {
+  return Array.from(segmenter.segment(piece.text), ({ segment, index }) => ({
+    text: segment,
+    start: piece.start + index,
+    end: piece.start + index + segment.length
+  }));
+}
+
 // src/core/domain/revision.ts
-var UNIT = /[\p{L}\p{N}_]+(?:['’][\p{L}\p{N}_]+)*|[^\s\p{L}\p{N}_]/gu;
+var UNIT = /[\p{L}\p{M}\p{N}_]+(?:['’][\p{L}\p{M}\p{N}_]+)*|[^\s\p{L}\p{M}\p{N}_]/gu;
 var WHITESPACE = /\s/;
 var MAX_DIFF_CELLS = 4e6;
 function unitsOf(text) {
-  return Array.from(text.matchAll(UNIT), (match) => ({
-    text: match[0],
-    start: match.index,
-    end: match.index + match[0].length
-  }));
+  return piecesOf(text, UNIT);
 }
 function similarity(original, revised) {
   const before = unitsOf(original);
@@ -391,7 +407,7 @@ var GrammarReview = class _GrammarReview {
 
 // src/core/application/draft-policy.ts
 var DEFAULT_DRAFT_POLICY = { minWords: 3, maxLength: 6e3 };
-var WORD = /[\p{L}\p{N}]+/gu;
+var WORD = /[\p{L}\p{M}\p{N}]+/gu;
 function judgeDraft(text, options = DEFAULT_DRAFT_POLICY) {
   const trimmed = text.trim();
   if (trimmed === "") {
@@ -406,7 +422,7 @@ function judgeDraft(text, options = DEFAULT_DRAFT_POLICY) {
   if (trimmed.length > options.maxLength) {
     return "too-long";
   }
-  const words = trimmed.match(WORD)?.length ?? 0;
+  const words = piecesOf(trimmed, WORD).length;
   return words < options.minWords ? "too-short" : "reviewable";
 }
 

@@ -10,6 +10,11 @@ describe('judgeDraft', () => {
     ['fix it', 'too-short'],
     ['Please fix the failing test', 'reviewable'],
     ['Corrija o teste que falha', 'reviewable'],
+    ['テストを追加して', 'reviewable'],
+    ['请修改这个函数', 'reviewable'],
+    ['直して', 'too-short'],
+    ['แก้ไขการทดสอบ', 'reviewable'],
+    ['ठीक करो', 'too-short'],
   ])('judges %j as %s', (text, verdict) => {
     expect(judgeDraft(text)).toBe(verdict)
   })
