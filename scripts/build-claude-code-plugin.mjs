@@ -1,21 +1,21 @@
 // Bundles the Claude Code adapter and the core it uses into the plugin's one
 // hooks module, and lays the plugin's $.state contract beside it. The plugin
-// is the repository root, so both land there.
+// is the plugin/ folder, which holds only what a user installs, so both land
+// there. A session started with `claude --plugin-dir plugin` hot-reloads it.
 //
-//   node scripts/build-claude-code-plugin.mjs [--mirror <dir>]...
-//
-// --mirror also copies the finished plugin to <dir> (a session's dev-mods
-// folder, say), so a running Claude Code session hot-reloads it.
+//   node scripts/build-claude-code-plugin.mjs
 import { build } from 'esbuild'
-import { copyFileSync, cpSync, mkdirSync } from 'node:fs'
+import { copyFileSync, mkdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
 const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
+const plugin = join(root, 'plugin')
+const hooksModule = join(plugin, 'hooks/register.js')
 
 await build({
   entryPoints: [join(root, 'src/adapters/claude-code/register.tsx')],
-  outfile: join(root, 'hooks/register.js'),
+  outfile: hooksModule,
   bundle: true,
   format: 'esm',
   platform: 'neutral',
@@ -30,21 +30,8 @@ await build({
   logLevel: 'warning',
 })
 
-const contract = join(root, 'types/index.d.ts')
+const contract = join(plugin, 'types/index.d.ts')
 mkdirSync(dirname(contract), { recursive: true })
 copyFileSync(join(root, 'src/adapters/claude-code/plugin-state.d.ts'), contract)
 
-// What a running session needs of the plugin; the rest of the repository is
-// source and tooling.
-const PLUGIN_FILES = ['.claude-plugin/plugin.json', 'hooks', 'types/index.d.ts', 'icon.png']
-
-const args = process.argv.slice(2)
-const mirrors = args.filter((arg, index) => args[index - 1] === '--mirror' && arg !== '--mirror')
-for (const mirror of mirrors) {
-  const target = resolve(mirror, 'prompt-dialect')
-  for (const file of PLUGIN_FILES) {
-    cpSync(join(root, file), join(target, file), { recursive: true })
-  }
-  console.log(`Mirrored the plugin to ${target}`)
-}
-console.log(`Built ${join(root, 'hooks/register.js')}`)
+console.log(`Built ${hooksModule}`)

@@ -4,7 +4,7 @@
 // terminal and desktop element tables accept.
 import type { On } from 'claude-code'
 import { describe, expect, mock, test, type Engine } from 'claude-code/testing'
-import type { DialectState } from '../../types'
+import type { DialectState } from '../../plugin/types'
 
 const SURFACES = ['terminal', 'desktop'] as const
 const DRAFT = 'Is it possible to change the window for prompts?'

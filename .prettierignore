@@ -1,6 +1,7 @@
 coverage
 node_modules
 types
-hooks/register.js
-.claude-plugin/types
+plugin/hooks/register.js
+plugin/.claude-plugin/types
 CHANGELOG.md
+.engine-tests
