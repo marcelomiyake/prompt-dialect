@@ -1,5 +1,5 @@
 import { atom, read, update } from 'claude-code'
-import type { EngineInterface, ModelEffort, On, PluginOptions, PromptBox, RenderSurface, Timer } from 'claude-code'
+import type { EngineInterface, ModelEffort, On, PluginOptions, RenderSurface, Timer } from 'claude-code'
 import {
   CheckGrammar,
   ImprovePrompt,
@@ -21,9 +21,6 @@ import { settingsFrom, type Settings } from './settings'
 const TOOL = 'Claude Code'
 const ENABLED_STORE_KEY = 'isEnabled'
 const MODEL_TIMEOUT_MS = 30_000
-/** Past these, filling the box again could fold the draft into a paste placeholder. */
-const MAX_REPAINT_LENGTH = 800
-const MAX_REPAINT_LINES = 3
 
 const INITIAL_STATE: DialectState = {
   draft: '',
@@ -100,7 +97,10 @@ export function register(on: On, options: PluginOptions): void {
     }
     boxChanges += 1
     const result = await next(e)
-    await followDraft($, e.text, settings)
+    const review = await followDraft($, e.text, settings)
+    if (review?.hasSuggestions) {
+      await paint($, review)
+    }
     return result
   })
 
@@ -202,31 +202,18 @@ async function checkDraft($: EngineInterface, settings: Settings): Promise<void>
     return
   }
   await update($, session, state => ({ ...state, draft: box.text, failure: null, review: reviewToState(review, true) }))
-  if (review.hasSuggestions) {
-    await repaint($, review, changes)
+  if (boxChanges === changes) {
+    await paint($, review)
   }
 }
 
 /**
- * Underlines `review` now instead of at the next edit, by filling the box
- * again with its own text. Only while it holds the reviewed text, no change
- * has reached the hooks since `changes`, and nothing would move: the fill
- * replaces the whole box, so it must never put an older text over newer typing.
+ * Underlines `review` now instead of at the next edit, without touching the
+ * text or the cursor: the box paints only while it still reads `review.text`.
+ * A review with no suggestions takes off the underlines carried over an edit.
  */
-async function repaint($: EngineInterface, review: GrammarReview, changes: number): Promise<void> {
-  const box = await $.prompt.read()
-  if (boxChanges === changes && box.text === review.text && canRepaint(box)) {
-    await $.prompt.fill({ text: box.text, mode: 'replace', decorations: decorationsFor(review) })
-  }
-}
-
-/** The box paints decorations on the next edit; fill it again now when that moves nothing. */
-function canRepaint(box: PromptBox): boolean {
-  return (
-    box.cursor === box.text.length &&
-    box.text.length <= MAX_REPAINT_LENGTH &&
-    box.text.split('\n').length <= MAX_REPAINT_LINES
-  )
+async function paint($: EngineInterface, review: GrammarReview): Promise<void> {
+  await $.prompt.paint({ text: review.text, decorations: decorationsFor(review) })
 }
 
 async function acceptSuggestion($: EngineInterface, id: string, settings: Settings): Promise<void> {

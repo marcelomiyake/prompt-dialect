@@ -1,6 +1,6 @@
 // A stand-in for Claude Code's engine: just enough of `on` and `$` for the
 // adapter's hooks to run in vitest, with every effect recorded for asserts.
-import type { PromptFillArgs } from 'claude-code'
+import type { PromptFillArgs, PromptPaintArgs } from 'claude-code'
 import type { DialectState } from '../../src/adapters/claude-code/plugin-state'
 
 type Hook = (...args: unknown[]) => unknown
@@ -29,6 +29,8 @@ export class FakeEngine {
   readonly store = new Map<string, unknown>()
   readonly commands: unknown[] = []
   readonly fills: PromptFillArgs[] = []
+  /** The paints the box took: each one stands over the draft until the next change. */
+  readonly paints: PromptPaintArgs[] = []
   readonly toasts: string[] = []
   readonly copies: string[] = []
   readonly modelRequests: ModelRequest[] = []
@@ -90,6 +92,13 @@ export class FakeEngine {
         this.box = { text, cursor: text.length }
         await this.dispatch('prompt.change', { ...this.box, origin: { kind: 'plugin', name: 'prompt-dialect' } })
         return { isFilled: true, text, cursor: text.length }
+      },
+      paint: async (args: PromptPaintArgs) => {
+        const isPainted = args.text === undefined ? args.decorations.length === 0 : args.text === this.box.text
+        if (isPainted) {
+          this.paints.push(args)
+        }
+        return { isPainted, ...this.box }
       },
     },
     session: {

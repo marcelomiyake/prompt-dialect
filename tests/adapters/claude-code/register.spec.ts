@@ -122,49 +122,71 @@ describe('checking as the person types', () => {
     expect(engine.session?.review).toMatchObject({ text: DRAFT, isFresh: true })
   })
 
-  it('underlines the mistakes at once when the cursor is at the end', async () => {
+  it('underlines the mistakes at once, without filling the box', async () => {
     await typeAndPause(DRAFT)
 
-    expect(engine.fills).toEqual([
+    expect(engine.paints).toEqual([
       {
         text: DRAFT,
-        mode: 'replace',
         decorations: [
           { start: 0, end: 17, underline: true, color: 'error' },
           expect.objectContaining({ underline: true, color: 'error' }),
         ],
       },
     ])
+    expect(engine.fills).toHaveLength(0)
   })
 
-  it('waits for the next edit to underline when the cursor is inside the draft', async () => {
+  it('underlines at once with the cursor inside the draft, and leaves the cursor there', async () => {
     await typeAndPause(DRAFT, 3)
 
+    expect(engine.paints.at(-1)?.decorations).toHaveLength(2)
+    expect(engine.box).toEqual({ text: DRAFT, cursor: 3 })
     expect(engine.fills).toHaveLength(0)
-    const box = await engine.type(DRAFT, 4)
-    expect(box.decorations).toHaveLength(2)
-    expect(engine.pendingTimers).toBe(0)
   })
 
-  it('does not repaint over typing that lands while the review is saved', async () => {
+  it('underlines a long, many-line draft at once', async () => {
+    const long = `${DRAFT}\n${'Keep the colors as they are now.\n'.repeat(30)}`
+    engine.answerModel = () => ({
+      isAnswered: true,
+      text: `<corrected>${long.replace('Is it possible to', 'Can you')}</corrected>`,
+    })
+
+    await typeAndPause(long, 5)
+
+    expect(engine.paints.at(-1)).toMatchObject({ text: long, decorations: [expect.objectContaining({ start: 0 })] })
+    expect(engine.box.text).toBe(long)
+  })
+
+  it('takes the carried underlines off once a check finds nothing', async () => {
+    await typeAndPause(DRAFT)
+    engine.answerModel = () => ({ isAnswered: true, text: `<corrected>${REVISED} Thanks</corrected>` })
+
+    await engine.type(`${REVISED} Thanks`)
+    await engine.advance(1000)
+
+    expect(engine.paints.at(-1)).toEqual({ text: `${REVISED} Thanks`, decorations: [] })
+  })
+
+  it('does not paint over typing that lands while the review is saved', async () => {
     const typed = `${DRAFT} And`
     afterReviewSaved(() => engine.type(typed))
 
     await typeAndPause(DRAFT)
 
-    expect(engine.fills).toHaveLength(0)
+    expect(engine.paints).toHaveLength(0)
     expect(engine.box.text).toBe(typed)
     expect(engine.session?.draft).toBe(typed)
   })
 
-  it('does not repaint a box that changed under the saved review', async () => {
+  it('does not paint a box that changed under the saved review', async () => {
     afterReviewSaved(() => {
       engine.box = { text: OTHER, cursor: OTHER.length }
     })
 
     await typeAndPause(DRAFT)
 
-    expect(engine.fills).toHaveLength(0)
+    expect(engine.paints).toHaveLength(0)
     expect(engine.box.text).toBe(OTHER)
   })
 
@@ -253,6 +275,18 @@ describe('checking as the person types', () => {
       origin: { kind: 'plugin', name: 'prompt-dialect' },
     })
     expect(engine.session?.draft).toBe(DRAFT)
+  })
+
+  it('underlines at once a draft that an undo brings back', async () => {
+    await typeAndPause(DRAFT)
+    await engine.type(`${DRAFT} Thanks`)
+    const painted = engine.paints.length
+
+    engine.box = { text: DRAFT, cursor: DRAFT.length }
+    await engine.dispatch('prompt.change', { ...engine.box, origin: { kind: 'undo' } })
+
+    expect(engine.paints).toHaveLength(painted + 1)
+    expect(engine.paints.at(-1)).toMatchObject({ text: DRAFT, decorations: [expect.anything(), expect.anything()] })
   })
 
   it('honours the configured models and pause', async () => {
