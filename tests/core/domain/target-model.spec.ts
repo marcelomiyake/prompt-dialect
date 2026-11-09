@@ -7,6 +7,8 @@ describe('TargetModel', () => {
     ['claude-opus-5-5[1m]', 'opus', '5.5', 'Opus 5.5'],
     ['Claude Sonnet 5.5', 'sonnet', '5.5', 'Sonnet 5.5'],
     ['claude-haiku-4-5-20251001', 'haiku', '4.5', 'Haiku 4.5'],
+    ['claude-fable-5-2', 'fable', '5.2', 'Fable 5.2'],
+    ['claude-mythos-5-2', 'mythos', '5.2', 'Mythos 5.2'],
     ['claude-fable-5-1', 'fable', '5.1', 'Fable 5.1'],
     ['claude-mythos-5', 'mythos', '5', 'Mythos 5'],
     ['opus', 'opus', undefined, 'Opus'],
