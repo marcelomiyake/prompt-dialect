@@ -16,6 +16,7 @@ const BAND = {
   requestId: 'band',
   props: {
     hasSurvey: false,
+    isCollapsed: false,
     isWorking: false,
     maxRows: 12,
     bodyColumns: 72,
