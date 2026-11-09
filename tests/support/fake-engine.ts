@@ -87,9 +87,9 @@ export class FakeEngine {
         if (text === undefined) {
           return { isFilled: false, ...this.box }
         }
-        this.box = { text, cursor: text.length }
+        this.box = { text, cursor: Math.min(args.cursor ?? text.length, text.length) }
         await this.dispatch('prompt.change', { ...this.box, origin: { kind: 'plugin', name: 'prompt-dialect' } })
-        return { isFilled: true, text, cursor: text.length }
+        return { isFilled: true, ...this.box }
       },
     },
     session: {

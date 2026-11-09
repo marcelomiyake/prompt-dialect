@@ -102,4 +102,20 @@ describe('GrammarReview', () => {
 
     expect(review.rebase(DRAFT)).toBe(review)
   })
+
+  it('keeps a caret where it was when one suggestion is accepted', () => {
+    const review = GrammarReview.fromRevision(DRAFT, REVISED)
+    expect(review.caretAfterAccepting('22-25', 6)).toBe(6)
+    expect(review.caretAfterAccepting('22-25', DRAFT.length)).toBe(DRAFT.length + 4)
+    expect(review.caretAfterAccepting('0-17', DRAFT.length)).toBe(DRAFT.length - 10)
+    expect(review.caretAfterAccepting('nope', 6)).toBe(6)
+  })
+
+  it('keeps a caret where it was when every suggestion is accepted', () => {
+    const review = GrammarReview.fromRevision(DRAFT, REVISED)
+
+    expect(review.caretAfterAcceptingAll(DRAFT.length)).toBe(REVISED.length)
+    expect(review.caretAfterAcceptingAll(DRAFT.indexOf('fix'))).toBe(REVISED.indexOf('fix'))
+    expect(review.caretAfterAcceptingAll(DRAFT.indexOf('prompts'))).toBe(REVISED.indexOf('prompts'))
+  })
 })

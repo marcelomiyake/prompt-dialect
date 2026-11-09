@@ -112,6 +112,20 @@ var Suggestion = class _Suggestion {
     }
     return text.slice(0, this.span.start) + this.replacement + text.slice(this.span.end);
   }
+  /**
+   * Where a caret at `caret` in the text before this fix stands after it:
+   * in place before the fix, past the replacement when it stood inside the
+   * replaced words, and moved with the text after them otherwise.
+   */
+  carryCaret(caret) {
+    if (caret <= this.span.start) {
+      return caret;
+    }
+    if (caret < this.span.end) {
+      return this.span.start + this.replacement.length;
+    }
+    return caret + this.replacement.length - this.span.length;
+  }
   /** The same suggestion after `change`, or undefined when the change touched it. */
   carriedThrough(change) {
     const span = change.carry(this.span);
@@ -343,6 +357,17 @@ var GrammarReview = class _GrammarReview {
   acceptAll() {
     const text = this.suggestions.reduceRight((draft, suggestion) => suggestion.applyTo(draft), this.text);
     return _GrammarReview.clean(text);
+  }
+  /**
+   * Where a caret at `caret` in this draft stands once suggestion `id` is
+   * accepted; in place when there is no such suggestion.
+   */
+  caretAfterAccepting(id, caret) {
+    return this.find(id)?.carryCaret(caret) ?? caret;
+  }
+  /** Where a caret at `caret` in this draft stands once every suggestion is accepted. */
+  caretAfterAcceptingAll(caret) {
+    return this.suggestions.reduceRight((moved, suggestion) => suggestion.carryCaret(moved), caret);
   }
   dismiss(id) {
     return new _GrammarReview(
@@ -1319,31 +1344,33 @@ function canRepaint(box) {
 }
 async function acceptSuggestion($, id, settings) {
   const changes = boxChanges;
-  const review = await reviewOfBox($);
+  const { review, cursor } = await reviewOfBox($);
   if (review?.find(id) !== void 0) {
     const accepted = review.accept(id);
-    await fillDraft($, settings, changes, { text: accepted.text, review: accepted });
+    const fill = { text: accepted.text, review: accepted, cursor: review.caretAfterAccepting(id, cursor) };
+    await fillDraft($, settings, changes, fill);
   }
 }
 async function acceptAllSuggestions($, settings) {
   const changes = boxChanges;
-  const review = await reviewOfBox($);
+  const { review, cursor } = await reviewOfBox($);
   if (review?.hasSuggestions) {
     const accepted = review.acceptAll();
-    await fillDraft($, settings, changes, { text: accepted.text, review: accepted });
+    const fill = { text: accepted.text, review: accepted, cursor: review.caretAfterAcceptingAll(cursor) };
+    await fillDraft($, settings, changes, fill);
   }
 }
 async function reviewOfBox($) {
   const { review } = await read($, session);
   const box = await $.prompt.read();
-  return review?.text === box.text ? reviewFromState(review) : void 0;
+  return { review: review?.text === box.text ? reviewFromState(review) : void 0, cursor: box.cursor };
 }
 async function fillDraft($, settings, changes, fill) {
   if (boxChanges !== changes) {
     return;
   }
   const decorations = fill.review === void 0 ? [] : decorationsFor(fill.review);
-  const filled = await $.prompt.fill({ text: fill.text, mode: "replace", decorations });
+  const filled = await $.prompt.fill({ text: fill.text, mode: "replace", decorations, cursor: fill.cursor });
   if (!filled.isFilled) {
     return;
   }
