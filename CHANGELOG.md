@@ -1,5 +1,20 @@
 # Changelog
 
+## [1.2.0](https://github.com/marcelomiyake/prompt-dialect/compare/v1.1.0...v1.2.0) (2026-11-09)
+
+
+### Features
+
+* **core:** split Japanese and Chinese drafts into words ([#16](https://github.com/marcelomiyake/prompt-dialect/issues/16)) ([fb91da7](https://github.com/marcelomiyake/prompt-dialect/commit/fb91da7ad60247f6459482cae08d4926279befbe))
+* **guides:** add the Fable 5.2 guide for Fable and Mythos 5.2 ([#19](https://github.com/marcelomiyake/prompt-dialect/issues/19)) ([7df5e64](https://github.com/marcelomiyake/prompt-dialect/commit/7df5e6455ba436a27f340d999b7c2664df44b7ed))
+
+
+### Bug Fixes
+
+* **claude-code:** keep the cursor in place when a fix is applied ([#17](https://github.com/marcelomiyake/prompt-dialect/issues/17)) ([cf4e52c](https://github.com/marcelomiyake/prompt-dialect/commit/cf4e52cfc16aa4f9ac6df3d443bbc089a7ff44f8))
+* **claude-code:** underline mistakes as soon as the check returns ([#15](https://github.com/marcelomiyake/prompt-dialect/issues/15)) ([b49e8cc](https://github.com/marcelomiyake/prompt-dialect/commit/b49e8cc63d20168c374eb27ba05a167397c426fb))
+* **core:** keep combining marks inside their word ([9789d0e](https://github.com/marcelomiyake/prompt-dialect/commit/9789d0e092b64c0c1d4118ad4f3ed61eeec1b280))
+
 ## [1.1.0](https://github.com/marcelomiyake/prompt-dialect/compare/v1.0.0...v1.1.0) (2026-11-03)
 
 
