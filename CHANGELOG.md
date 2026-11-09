@@ -1,5 +1,12 @@
 # Changelog
 
+## [1.2.1](https://github.com/marcelomiyake/prompt-dialect/compare/v1.2.0...v1.2.1) (2026-11-09)
+
+
+### Bug Fixes
+
+* **claude-code:** ship only the plugin folder in a marketplace install ([f440ec1](https://github.com/marcelomiyake/prompt-dialect/commit/f440ec1bda8422656827cd086debc88862b81866))
+
 ## [1.2.0](https://github.com/marcelomiyake/prompt-dialect/compare/v1.1.0...v1.2.0) (2026-11-09)
 
 
