@@ -12,7 +12,7 @@ export type DraftPolicyOptions = {
 
 export const DEFAULT_DRAFT_POLICY: DraftPolicyOptions = { minWords: 3, maxLength: 6000 }
 
-const WORD = /[\p{L}\p{N}]+/gu
+const WORD = /[\p{L}\p{M}\p{N}]+/gu
 
 /**
  * Which drafts are worth reviewing: prose a person is writing, not a slash

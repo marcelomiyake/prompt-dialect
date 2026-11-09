@@ -140,7 +140,7 @@ function split(piece, segmenter) {
 }
 
 // src/core/domain/revision.ts
-var UNIT = /[\p{L}\p{N}_]+(?:['’][\p{L}\p{N}_]+)*|[^\s\p{L}\p{N}_]/gu;
+var UNIT = /[\p{L}\p{M}\p{N}_]+(?:['’][\p{L}\p{M}\p{N}_]+)*|[^\s\p{L}\p{M}\p{N}_]/gu;
 var WHITESPACE = /\s/;
 var MAX_DIFF_CELLS = 4e6;
 function unitsOf(text) {
@@ -382,7 +382,7 @@ var GrammarReview = class _GrammarReview {
 
 // src/core/application/draft-policy.ts
 var DEFAULT_DRAFT_POLICY = { minWords: 3, maxLength: 6e3 };
-var WORD = /[\p{L}\p{N}]+/gu;
+var WORD = /[\p{L}\p{M}\p{N}]+/gu;
 function judgeDraft(text, options = DEFAULT_DRAFT_POLICY) {
   const trimmed = text.trim();
   if (trimmed === "") {

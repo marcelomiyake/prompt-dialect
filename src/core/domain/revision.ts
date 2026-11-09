@@ -24,7 +24,7 @@ type Texts = {
   readonly after: readonly Unit[]
 }
 
-const UNIT = /[\p{L}\p{N}_]+(?:['’][\p{L}\p{N}_]+)*|[^\s\p{L}\p{N}_]/gu
+const UNIT = /[\p{L}\p{M}\p{N}_]+(?:['’][\p{L}\p{M}\p{N}_]+)*|[^\s\p{L}\p{M}\p{N}_]/gu
 const WHITESPACE = /\s/
 /** Past this many cells the diff falls back to one hunk around the change. */
 const MAX_DIFF_CELLS = 4_000_000

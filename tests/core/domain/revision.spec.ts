@@ -35,6 +35,11 @@ describe('unitsOf', () => {
     expect(unitsOf('não está aqui').map(unit => unit.text)).toEqual(['não', 'está', 'aqui'])
   })
 
+  it('keeps combining marks inside their word', () => {
+    expect(unitsOf('परीक्षण ठीक करो').map(unit => unit.text)).toEqual(['परीक्षण', 'ठीक', 'करो'])
+    expect(unitsOf('แก้ไขการทดสอบ').map(unit => unit.text)).toEqual(['แก้ไข', 'การ', 'ทดสอบ'])
+  })
+
   it('splits Japanese and Chinese into words, not runs of characters', () => {
     expect(unitsOf('テストを追加して。').map(unit => unit.text)).toEqual(['テスト', 'を', '追加', 'し', 'て', '。'])
     expect(unitsOf('请修改这个函数').map(unit => unit.text)).toEqual(['请', '修改', '这个', '函数'])
