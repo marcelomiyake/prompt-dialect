@@ -877,6 +877,23 @@ var MODEL_GUIDES = [
     ]
   },
   {
+    id: "fable-5-2",
+    title: "Prompting Claude Fable 5.2",
+    source: `${DOCS}/prompting-claude-fable-5-2`,
+    families: ["fable", "mythos"],
+    version: "5.2",
+    guidelines: [
+      "Ask it to keep going until everything asked for is done, to diagnose ordinary obstacles instead of stopping, and to stop only at a deliberate blocker or before a risky step.",
+      "Name the exact actions that need your approval, and the routine steps that need none (such as retrying a call that is safe to repeat), rather than one broad rule.",
+      "Say who owns the code: for a restructure, say the codebase is its to shape; for a minimal change, leave that out and keep the scope tight.",
+      "Ask for a line before starting, a one-line update every few tool calls, and a closing recap that stands alone.",
+      'Say when a subagent is worth its cost and when to do the work directly; drop standing "delegate this" lines carried over from older prompts.',
+      'Drop cautions and absolute rules whose reason no longer holds, and write the exception into any "never" rule (for example, "unless I approve it first").',
+      "Ask for a report a low-context reader can follow: key points first, short sentences, no terms invented during the work.",
+      'Do not ask it to write out its reasoning or to "think less"; ask for a short summary of the answer or of the actions taken.'
+    ]
+  },
+  {
     id: "fable-5-1",
     title: "Prompting Claude Fable 5.1",
     source: `${DOCS}/prompting-claude-fable-5-1`,
