@@ -51,7 +51,7 @@ The API's type declarations are generated per Claude Code build and are not comm
 | Copy the Claude Code API types                                           | `npm run types:sync`                                          |
 | Type-check source and tests                                              | `npm run typecheck`                                           |
 | Bundle the mod                                                           | `npm run build`                                               |
-| Bundle and copy to a hot-reloaded mods folder                            | `node scripts/build-claude-code-plugin.mjs --mirror <dir>`    |
+| Load the mod in a session that hot-reloads it after each build           | `claude --plugin-dir plugin`                                  |
 | Validate the marketplace and the mod, with the plugin directory's checks | `npm run validate:plugin`                                     |
 | Run the mod's tests inside Claude Code's engine                          | `npm run test:plugin`                                         |
 | Everything above, in order                                               | `npm run verify`                                              |

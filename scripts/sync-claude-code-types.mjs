@@ -3,7 +3,7 @@
 // folder it hot-reloads; they are generated per build, so they are not
 // committed. Source, first found: $CLAUDE_CODE_TYPES, then the copy the engine
 // laid in plugin/.claude-plugin/types/.
-import { copyFileSync, existsSync, mkdirSync } from 'node:fs'
+import { copyFileSync, existsSync, mkdirSync, statSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -13,7 +13,10 @@ const candidates = [
   join(root, 'plugin/.claude-plugin/types/claude-code/index.d.ts'),
 ].filter(Boolean)
 
-const source = candidates.find(path => existsSync(path))
+/** Only a type declaration file is copied, whatever path the variable names. */
+const isDeclarationFile = path => path.endsWith('.d.ts') && existsSync(path) && statSync(path).isFile()
+
+const source = candidates.map(path => resolve(path)).find(isDeclarationFile)
 if (source === undefined) {
   console.error(
     'No Claude Code type declarations found. Load the mod once with\n' +

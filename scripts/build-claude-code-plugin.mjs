@@ -1,14 +1,11 @@
 // Bundles the Claude Code adapter and the core it uses into the plugin's one
 // hooks module, and lays the plugin's $.state contract beside it. The plugin
 // is the plugin/ folder, which holds only what a user installs, so both land
-// there.
+// there. A session started with `claude --plugin-dir plugin` hot-reloads it.
 //
-//   node scripts/build-claude-code-plugin.mjs [--mirror <dir>]...
-//
-// --mirror also copies the finished plugin to <dir> (a session's dev-mods
-// folder, say), so a running Claude Code session hot-reloads it.
+//   node scripts/build-claude-code-plugin.mjs
 import { build } from 'esbuild'
-import { copyFileSync, cpSync, mkdirSync } from 'node:fs'
+import { copyFileSync, mkdirSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -37,14 +34,4 @@ const contract = join(plugin, 'types/index.d.ts')
 mkdirSync(dirname(contract), { recursive: true })
 copyFileSync(join(root, 'src/adapters/claude-code/plugin-state.d.ts'), contract)
 
-const args = process.argv.slice(2)
-const mirrors = args.filter((arg, index) => args[index - 1] === '--mirror' && arg !== '--mirror')
-for (const mirror of mirrors) {
-  const target = resolve(mirror, 'prompt-dialect')
-  cpSync(plugin, target, {
-    recursive: true,
-    filter: source => !source.startsWith(join(plugin, '.claude-plugin/types')),
-  })
-  console.log(`Mirrored the plugin to ${target}`)
-}
 console.log(`Built ${hooksModule}`)
