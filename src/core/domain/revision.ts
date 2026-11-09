@@ -1,8 +1,9 @@
 import { Suggestion } from './suggestion'
 import { TextSpan } from './text-span'
+import { piecesOf, type Piece } from './words'
 
 /** A word or a punctuation mark of a text, where it lies in that text. */
-type Unit = { readonly text: string; readonly start: number; readonly end: number }
+type Unit = Piece
 
 type Operation =
   | { readonly kind: 'equal'; readonly before: number; readonly after: number }
@@ -23,17 +24,13 @@ type Texts = {
   readonly after: readonly Unit[]
 }
 
-const UNIT = /[\p{L}\p{N}_]+(?:['’][\p{L}\p{N}_]+)*|[^\s\p{L}\p{N}_]/gu
+const UNIT = /[\p{L}\p{M}\p{N}_]+(?:['’][\p{L}\p{M}\p{N}_]+)*|[^\s\p{L}\p{M}\p{N}_]/gu
 const WHITESPACE = /\s/
 /** Past this many cells the diff falls back to one hunk around the change. */
 const MAX_DIFF_CELLS = 4_000_000
 
 export function unitsOf(text: string): Unit[] {
-  return Array.from(text.matchAll(UNIT), match => ({
-    text: match[0],
-    start: match.index,
-    end: match.index + match[0].length,
-  }))
+  return piecesOf(text, UNIT)
 }
 
 /**

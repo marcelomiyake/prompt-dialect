@@ -34,6 +34,16 @@ describe('unitsOf', () => {
   it('keeps letters outside ASCII together', () => {
     expect(unitsOf('não está aqui').map(unit => unit.text)).toEqual(['não', 'está', 'aqui'])
   })
+
+  it('keeps combining marks inside their word', () => {
+    expect(unitsOf('परीक्षण ठीक करो').map(unit => unit.text)).toEqual(['परीक्षण', 'ठीक', 'करो'])
+    expect(unitsOf('แก้ไขการทดสอบ').map(unit => unit.text)).toEqual(['แก้ไข', 'การ', 'ทดสอบ'])
+  })
+
+  it('splits Japanese and Chinese into words, not runs of characters', () => {
+    expect(unitsOf('テストを追加して。').map(unit => unit.text)).toEqual(['テスト', 'を', '追加', 'し', 'て', '。'])
+    expect(unitsOf('请修改这个函数').map(unit => unit.text)).toEqual(['请', '修改', '这个', '函数'])
+  })
 })
 
 describe('suggestionsBetween', () => {
@@ -93,6 +103,18 @@ describe('suggestionsBetween', () => {
   it('fixes a misspelling inside a sentence', () => {
     expect(fixes('Please recieve the file', 'Please receive the file')).toEqual([
       { original: 'recieve', replacement: 'receive', at: 7 },
+    ])
+  })
+
+  it('fixes only the misspelled word of a Chinese sentence', () => {
+    expect(fixes('请修改这个涵数的名字', '请修改这个函数的名字')).toEqual([
+      { original: '涵数', replacement: '函数', at: 5 },
+    ])
+  })
+
+  it('fixes only the wrong particle of a Japanese sentence', () => {
+    expect(fixes('このテストが追加してください。', 'このテストを追加してください。')).toEqual([
+      { original: 'が', replacement: 'を', at: 5 },
     ])
   })
 
