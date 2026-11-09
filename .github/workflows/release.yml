@@ -2,7 +2,7 @@ name: Release
 
 # release-please reads the Conventional Commits merged into main and keeps
 # one release pull request open: it writes the new version to package.json,
-# package-lock.json and .claude-plugin/plugin.json and adds the release to
+# package-lock.json and plugin/.claude-plugin/plugin.json and adds the release to
 # CHANGELOG.md. Merging that pull request tags vX.Y.Z and publishes the
 # GitHub release. fix:, perf: and revert: are a patch, feat: a minor, and a
 # breaking change (!) a major.
