@@ -4,3 +4,4 @@ types
 plugin/hooks/register.js
 plugin/.claude-plugin/types
 CHANGELOG.md
+.engine-tests

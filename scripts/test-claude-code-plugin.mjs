@@ -3,11 +3,10 @@
 //
 // `claude plugin test` runs the *.test.ts files under the plugin folder, but
 // plugin/ holds only what a user installs, so the tests are not kept there.
-// This lays the plugin and the tests side by side in a temporary folder and
-// runs them there.
+// This lays the plugin and the tests side by side in .engine-tests/ (ignored
+// by git) and runs them there.
 import { spawnSync } from 'node:child_process'
-import { cpSync, mkdtempSync, rmSync } from 'node:fs'
-import { tmpdir } from 'node:os'
+import { cpSync, rmSync } from 'node:fs'
 import { dirname, join, resolve } from 'node:path'
 import { fileURLToPath } from 'node:url'
 
@@ -15,7 +14,8 @@ const root = resolve(dirname(fileURLToPath(import.meta.url)), '..')
 const plugin = join(root, 'plugin')
 const generatedTypes = join(plugin, '.claude-plugin/types')
 
-const workspace = mkdtempSync(join(tmpdir(), 'prompt-dialect-engine-'))
+const workspace = join(root, '.engine-tests')
+rmSync(workspace, { recursive: true, force: true })
 try {
   cpSync(plugin, workspace, { recursive: true, filter: source => !source.startsWith(generatedTypes) })
   cpSync(join(root, 'tests/engine'), join(workspace, 'tests/engine'), { recursive: true })
