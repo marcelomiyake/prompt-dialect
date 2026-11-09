@@ -40,6 +40,21 @@ export class Suggestion {
     return text.slice(0, this.span.start) + this.replacement + text.slice(this.span.end)
   }
 
+  /**
+   * Where a caret at `caret` in the text before this fix stands after it:
+   * in place before the fix, past the replacement when it stood inside the
+   * replaced words, and moved with the text after them otherwise.
+   */
+  carryCaret(caret: number): number {
+    if (caret <= this.span.start) {
+      return caret
+    }
+    if (caret < this.span.end) {
+      return this.span.start + this.replacement.length
+    }
+    return caret + this.replacement.length - this.span.length
+  }
+
   /** The same suggestion after `change`, or undefined when the change touched it. */
   carriedThrough(change: TextChange): Suggestion | undefined {
     const span = change.carry(this.span)

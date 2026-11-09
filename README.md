@@ -66,7 +66,6 @@ Set them in `/config`, or under `pluginConfigs` in your settings:
 
 - Claude Code folds a long paste into a placeholder such as `[Pasted text #1 +10 lines]` and does not give mods the text behind it, so the check and the rewrite cannot read it. The band says which pastes it could not read, and offers no rewrite while one is folded, because the rewrite would leave the paste out. Paste the same text again to expand the placeholder, and the next check reads it. Or press `ctrl+g` and change the paste in your editor: Claude Code expands each paste you change, and folds back any you save unchanged. The words you type around a folded paste are still checked.
 - Hover needs a pointer: the fullscreen terminal or the desktop app. Everywhere else, use the keyboard path above.
-- Clicking a fix replaces the whole draft with the fixed one, so the cursor moves to the end.
 
 ## What it reads, sends, and stores
 

@@ -368,6 +368,22 @@ describe('the band above the prompt', () => {
     expect(engine.session?.draft).toBe('Can you change the window for prompts?')
   })
 
+  it('keeps the cursor on the same words when a fix is applied before it', async () => {
+    await typeAndPause(DRAFT, DRAFT.indexOf('window'))
+
+    await press(await engine.renderBand(), 'fix-0-17')
+
+    expect(engine.box).toEqual({ text: FIRST_FIXED, cursor: FIRST_FIXED.indexOf('window') })
+  })
+
+  it('keeps the cursor in place when a fix is applied after it', async () => {
+    await typeAndPause(DRAFT, 3)
+
+    await press(await engine.renderBand(), 'fix-36-39')
+
+    expect(engine.box).toEqual({ text: 'Is it possible to change the window in prompts?', cursor: 3 })
+  })
+
   it('keeps the review as it was when the box refuses a fix', async () => {
     await typeAndPause(DRAFT)
     const band = await engine.renderBand()
@@ -465,6 +481,14 @@ describe('the band above the prompt', () => {
     expect(await engine.renderBand()).toBe('engine')
   })
 
+  it('keeps the cursor on the same words when every fix is applied', async () => {
+    await typeAndPause(DRAFT, DRAFT.indexOf('prompts'))
+
+    await press(await engine.renderBand(), 'fix-all')
+
+    expect(engine.box).toEqual({ text: REVISED, cursor: REVISED.indexOf('prompts') })
+  })
+
   it('rewrites the draft for the session model and uses it on request', async () => {
     engine.sessionModel = 'claude-sonnet-5-5'
     await typeAndPause(DRAFT)
@@ -480,7 +504,7 @@ describe('the band above the prompt', () => {
 
     await press(band, 'use-improvement')
 
-    expect(engine.box.text).toBe(IMPROVED)
+    expect(engine.box).toEqual({ text: IMPROVED, cursor: IMPROVED.length })
     expect(engine.session?.improvement).toBeNull()
   })
 

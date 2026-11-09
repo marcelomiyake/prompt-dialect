@@ -218,27 +218,29 @@ async function paint($: EngineInterface, review: GrammarReview): Promise<void> {
 
 async function acceptSuggestion($: EngineInterface, id: string, settings: Settings): Promise<void> {
   const changes = boxChanges
-  const review = await reviewOfBox($)
+  const { review, cursor } = await reviewOfBox($)
   if (review?.find(id) !== undefined) {
     const accepted = review.accept(id)
-    await fillDraft($, settings, changes, { text: accepted.text, review: accepted })
+    const fill = { text: accepted.text, review: accepted, cursor: review.caretAfterAccepting(id, cursor) }
+    await fillDraft($, settings, changes, fill)
   }
 }
 
 async function acceptAllSuggestions($: EngineInterface, settings: Settings): Promise<void> {
   const changes = boxChanges
-  const review = await reviewOfBox($)
+  const { review, cursor } = await reviewOfBox($)
   if (review?.hasSuggestions) {
     const accepted = review.acceptAll()
-    await fillDraft($, settings, changes, { text: accepted.text, review: accepted })
+    const fill = { text: accepted.text, review: accepted, cursor: review.caretAfterAcceptingAll(cursor) }
+    await fillDraft($, settings, changes, fill)
   }
 }
 
-/** The review, when it is for the text in the box right now. */
-async function reviewOfBox($: EngineInterface): Promise<GrammarReview | undefined> {
+/** The review, when it is for the text in the box right now, and where the box's cursor stands. */
+async function reviewOfBox($: EngineInterface): Promise<{ review?: GrammarReview; cursor: number }> {
   const { review } = await read($, session)
   const box = await $.prompt.read()
-  return review?.text === box.text ? reviewFromState(review) : undefined
+  return { review: review?.text === box.text ? reviewFromState(review) : undefined, cursor: box.cursor }
 }
 
 /** A draft to put in the box, and what the mod knows of it. */
@@ -248,6 +250,8 @@ type DraftFill = {
   readonly review?: GrammarReview
   /** Clears the rewrite on offer once `text` is in the box; kept when absent. */
   readonly improvement?: null
+  /** Where the cursor stands in `text` once it lands; at the end when absent. */
+  readonly cursor?: number
 }
 
 /**
@@ -261,7 +265,7 @@ async function fillDraft($: EngineInterface, settings: Settings, changes: number
     return
   }
   const decorations = fill.review === undefined ? [] : decorationsFor(fill.review)
-  const filled = await $.prompt.fill({ text: fill.text, mode: 'replace', decorations })
+  const filled = await $.prompt.fill({ text: fill.text, mode: 'replace', decorations, cursor: fill.cursor })
   if (!filled.isFilled) {
     return
   }

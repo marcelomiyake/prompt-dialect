@@ -49,4 +49,21 @@ describe('Suggestion', () => {
 
     expect(suggestion.carriedThrough(TextChange.between(TEXT, 'I hass a cat'))).toBeUndefined()
   })
+
+  it('carries a caret over the fix', () => {
+    const suggestion = Suggestion.create(TextSpan.of(2, 5), 'has', 'have')
+
+    expect(suggestion.carryCaret(0)).toBe(0)
+    expect(suggestion.carryCaret(2)).toBe(2)
+    expect(suggestion.carryCaret(3)).toBe(6)
+    expect(suggestion.carryCaret(5)).toBe(6)
+    expect(suggestion.carryCaret(TEXT.length)).toBe(TEXT.length + 1)
+  })
+
+  it('carries a caret over a deletion', () => {
+    const suggestion = Suggestion.create(TextSpan.of(6, 8), 'a ', '')
+
+    expect(suggestion.carryCaret(7)).toBe(6)
+    expect(suggestion.carryCaret(TEXT.length)).toBe(TEXT.length - 2)
+  })
 })

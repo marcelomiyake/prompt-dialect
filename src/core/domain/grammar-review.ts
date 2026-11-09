@@ -62,6 +62,19 @@ export class GrammarReview {
     return GrammarReview.clean(text)
   }
 
+  /**
+   * Where a caret at `caret` in this draft stands once suggestion `id` is
+   * accepted; in place when there is no such suggestion.
+   */
+  caretAfterAccepting(id: string, caret: number): number {
+    return this.find(id)?.carryCaret(caret) ?? caret
+  }
+
+  /** Where a caret at `caret` in this draft stands once every suggestion is accepted. */
+  caretAfterAcceptingAll(caret: number): number {
+    return this.suggestions.reduceRight((moved, suggestion) => suggestion.carryCaret(moved), caret)
+  }
+
   dismiss(id: string): GrammarReview {
     return new GrammarReview(
       this.text,
