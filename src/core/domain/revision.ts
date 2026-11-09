@@ -1,8 +1,9 @@
 import { Suggestion } from './suggestion'
 import { TextSpan } from './text-span'
+import { piecesOf, type Piece } from './words'
 
 /** A word or a punctuation mark of a text, where it lies in that text. */
-type Unit = { readonly text: string; readonly start: number; readonly end: number }
+type Unit = Piece
 
 type Operation =
   | { readonly kind: 'equal'; readonly before: number; readonly after: number }
@@ -29,11 +30,7 @@ const WHITESPACE = /\s/
 const MAX_DIFF_CELLS = 4_000_000
 
 export function unitsOf(text: string): Unit[] {
-  return Array.from(text.matchAll(UNIT), match => ({
-    text: match[0],
-    start: match.index,
-    end: match.index + match[0].length,
-  }))
+  return piecesOf(text, UNIT)
 }
 
 /**
