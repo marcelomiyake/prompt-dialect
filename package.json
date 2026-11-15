@@ -27,7 +27,7 @@
   "author": "Marcelo Masahiko Miyake",
   "type": "module",
   "engines": {
-    "node": ">=22"
+    "node": ">=26.13.1"
   },
   "scripts": {
     "build": "node scripts/build-claude-code-plugin.mjs",
@@ -43,7 +43,7 @@
     "format:check": "prettier --check ."
   },
   "devDependencies": {
-    "@types/node": "^24.19.2",
+    "@types/node": "^26.6.6",
     "@vitest/coverage-v8": "^5.1.0",
     "esbuild": "^0.28.2",
     "prettier": "^3.9.10",
